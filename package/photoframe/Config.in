@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PHOTOFRAME
+	bool "photoframe"
+	select BR2_PACKAGE_DAVFS2
+	select BR2_PACKAGE_RSYNC
+	select BR2_PACKAGE_FBV
+	help
+	  Small photo frame app to show images from an dav storage onto
+	  the framebuffer.
