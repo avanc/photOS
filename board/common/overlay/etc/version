@@ -1,4 +1,4 @@
-OS_NAME="thingOS"
-OS_SHORT_NAME="thingos"
+OS_NAME="photOS"
+OS_SHORT_NAME="photOS"
 OS_PREFIX="thing"
 OS_VERSION="0.0.2"
