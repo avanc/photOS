@@ -4,8 +4,9 @@
 #
 ################################################################################
 
-FBV_VERSION = 1.0b
-FBV_SITE = http://s-tech.elsat.net.pl/fbv
+FBV_VERSION = fcd0779
+FBV_SITE = https://github.com/godspeed1989/fbv.git
+FBV_SITE_METHOD = git
 
 FBV_LICENSE = GPL-2.0
 FBV_LICENSE_FILES = COPYING
