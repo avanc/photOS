@@ -1,11 +1,8 @@
-# What's photoOS?
+# What's photOS?
 
-**photoOS** is a lightweight operating system for a DIY photoframe. The software syncs photos with a dav server so new images can be easily added. In my current setup I use [Nextcloud](https://nextcloud.com) as server, but any dav server should work. With Nextcloud I can use the Android app to directly upload images from my mobile phone. In addition, I can share the photo folder with other family members, so they can add photos as well. Even from a distance during pandemies...
+**photOS** is a lightweight Linux-based operating system for a DIY photoframe. The software syncs photos with a dav server so new images can be easily added. In my current setup I use [Nextcloud](https://nextcloud.com) as server, but any dav server should work. With Nextcloud I can use the Android app to directly upload images from my mobile phone. In addition, I can share the photo folder with other family members, so they can add photos as well. Even from a distance during pandemies...
 
 Main focus are the Raspberry Pi boards (especially Raspberry Pi Zero W, as the performance is sufficient). But as photoOS is based on the great work of [thingOS](https://github.com/ccrisan/thingos) by ccrisan, which builds on top of [BuildRoot](https://buildroot.uclibc.org), other boards can be easily supported. Just create a ticket for not supported boards.
-
-
-that serves as a base for IoT dedicated operating systems. If you want to turn your Raspberry PI board into something that controls your lights, doors, sprinklers or other devices, by designing your own "firmware", thingOS may be a good choice.
 
 # Features
 * **Sync**: Photos can be synced from a dav server.
@@ -32,7 +29,7 @@ This section describes the setup using a prebuild image. However, there is no pr
 
         ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img" -n 'yournet:yourkey' -p 'https://davserver/yourphotos:username:password' 
 
-    **note**: specify the device path to the disk and not to some partition (e.g. `/dev/mmcblk0` instead of `/dev/mmcblk0p1`)
+    **Note**: Specify the device path to the disk and not to some partition (e.g. `/dev/mmcblk0` instead of `/dev/mmcblk0p1`).
 
 
 ## The other way
@@ -40,16 +37,16 @@ Although the image can be easily created thanks to thingOS and BuildRoot, the co
 
 1. Clone the repository:
 
-    git clone https://github.com/avanc/photOS.git
+        git clone https://github.com/avanc/photOS.git
     
 2. Compile the whole stuff and take a rest:
 
-    cd photOS
-    ./build.sh <board_name>
+        cd photOS
+        ./build.sh <board_name>
     
 3. Build the compressed image:
 
-    ./build.sh <board_name> mkrelease
+        ./build.sh <board_name> mkrelease
 
-4. Write the image to SD-card as written above in The quick way
+4. Write the image to SD card as written above in _The quick way_
 
