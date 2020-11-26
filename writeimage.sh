@@ -11,6 +11,7 @@ Available options:
     [-m modem:apn:user:pwd:pin] - configures the mobile network modem (e.g. -m ttyUSB0:internet)
     [-n ssid:psk] - sets the wireless network name and key (e.g. -n mynet:mykey1234)
     [-s ip/cidr:gw:dns] - sets a static IP configuration instead of DHCP (e.g. -s 192.168.1.101/24:192.168.1.1:8.8.8.8)
+    [-p davurl:user:password] - Configure webdav access for photoframe (e.g. -p https://myserver/dav:username:S3cr3t)
 END_USAGE
     exit 1
 }
@@ -51,6 +52,12 @@ while getopts "a:d:f:h:i:lm:n:o:p:s:w" o; do
             IP=${S_IP[0]}
             GW=${S_IP[1]}
             DNS=${S_IP[2]}
+            ;;
+        p)
+            IFS=":" DAV=($OPTARG)
+            DAV_URL=${DAV[0]}
+            DAV_USER=${DAV[1]}
+            DAV_PASSWD=${DAV[2]}
             ;;
         *)
             usage 1>&2
@@ -172,6 +179,15 @@ if [ -n "$IP" ] && [ -n "$GW" ] && [ -n "$DNS" ]; then
     echo "STATIC_IP=\"$IP\""
     echo "STATIC_GW=\"$GW\""
     echo "STATIC_DNS=\"$DNS\""
+    } > "$conf"
+fi
+
+# dav for photoframe
+if [ -n "$DAV_URL" ] && [ -n "$DAV_USER" ] && [ -n "$DAV_PASSWD" ]; then
+    msg "setting dav configuration"
+    conf=$BOOT/photoframe.conf
+    {
+    echo "$DAV_URL $DAV_USER $DAV_PASSWD"
     } > "$conf"
 fi
 
