@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-FBV_VERSION = 76e64c4
+FBV_VERSION = d728d10
 FBV_SITE = https://github.com/godspeed1989/fbv.git
 FBV_SITE_METHOD = git
 
