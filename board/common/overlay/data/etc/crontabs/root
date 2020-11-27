@@ -1,0 +1,3 @@
+*/30 * * * * /bin/photoframe.sh sync
+0    7 * * * /bin/photoframe.sh display on
+0   20 * * * /bin/photoframe.sh display off
