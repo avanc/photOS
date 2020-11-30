@@ -11,7 +11,7 @@ Available options:
     [-m modem:apn:user:pwd:pin] - configures the mobile network modem (e.g. -m ttyUSB0:internet)
     [-n ssid:psk] - sets the wireless network name and key (e.g. -n mynet:mykey1234)
     [-s ip/cidr:gw:dns] - sets a static IP configuration instead of DHCP (e.g. -s 192.168.1.101/24:192.168.1.1:8.8.8.8)
-    [-p davurl:user:password] - Configure webdav access for photoframe (e.g. -p https://myserver/dav:username:S3cr3t)
+    [-p davurl,user,password] - Configure webdav access for photoframe (e.g. -p https://myserver/dav,username,S3cr3t)
 END_USAGE
     exit 1
 }
@@ -54,7 +54,7 @@ while getopts "a:d:f:h:i:lm:n:o:p:s:w" o; do
             DNS=${S_IP[2]}
             ;;
         p)
-            IFS=":" DAV=($OPTARG)
+            IFS="," DAV=($OPTARG)
             DAV_URL=${DAV[0]}
             DAV_USER=${DAV[1]}
             DAV_PASSWD=${DAV[2]}
