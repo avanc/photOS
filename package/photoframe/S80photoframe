@@ -4,7 +4,7 @@ SYS_CONF="/etc/photoframe/photoframe.conf"
 BOOT_CONF="/boot/photoframe.conf"
 CONF="/data/photoframe/photoframe.conf"
 
-PROG=/bin/photoframe.sh
+PROG=/usr/bin/photoframe.sh
 
 test -x ${PROG} || exit 0
 

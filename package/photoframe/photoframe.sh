@@ -4,7 +4,9 @@ DAVFS_CONF=/etc/photoframe/davfs2.conf
 MOUNTPOINT_DAV=/data/photoframe/images_webdav
 FOLDER_IMAGES=/data/photoframe/images_local
 
-PARAMS_FBV="--noclear;--smartfit;30;--delay;1"
+PARAMS_FBV="--noclear --smartfit 30 --delay 1"
+
+NO_IMAGES="/usr/share/photoframe/noimages.png"
 
 DELAY=3
 
@@ -28,22 +30,46 @@ function sync {
 }
 
 
-function get_images {
-  local IMAGES
-  IMAGES=""
+num_files=0;
+
+function get_image {
+  local rnd_num
+  rnd_num=-1
+  local counter
+  counter=0
+
+  if [ $num_files -gt 0 ]
+  then
+    rnd_num=$(( $RANDOM % $num_files ))
+  fi
+
+  local IMAGE
+  IMAGE=""
   for f in $FOLDER_IMAGES/*; do
-    [[ -e $f ]] || continue
+    [[ -f $f ]] || continue
     if [[ $f =~ .*\.(jpg|JPG|png) ]]
     then
-      if [ ! -z "$IMAGES" ]      
+      if [ $counter -eq $rnd_num ]
       then
-        IMAGES="$IMAGES;"     
-      fi                      
-      IMAGES="$IMAGES${f}"
+        IMAGE=$f;
+      fi
+      counter=$((counter+1)); 
     fi
   done
 
-  echo $IMAGES
+  num_files=$counter;
+
+  if [ -z "$IMAGE" ]                                     
+  then 
+    if [ $num_files -eq 0 ]
+    then
+      IMAGE=$NO_IMAGES
+    else
+      IMAGE=$(get_image)
+    fi
+  fi                                                        
+
+  echo $IMAGE
 }
 
 
@@ -51,19 +77,11 @@ function get_images {
 function start {
 
   while true; do
-    IMAGES=$(get_images)
-    echo $IMAGES
+    IMAGE=$(get_image)
+    echo $IMAGE
 
-    OFS="$IFS"
-    IFS=";"
-    for i in $IMAGES
-    do
-      # dd if=/dev/zero of=/dev/fb0
-      fbv $PARAMS_FBV $i
-      sleep $DELAY
-    done
-  
-  IFS="$OFS"
+    fbv $PARAMS_FBV "$IMAGE"
+    sleep $DELAY
   done
 }
 
@@ -107,6 +125,10 @@ case "$1" in
         display $2                                                   
         ;;                                           
              
+    test)
+        get_image
+        ;;
+
     *)
         echo "Usage: $0 {start|stop|restart|sync|display on/off}"
         exit 1
