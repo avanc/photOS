@@ -10,12 +10,16 @@ test -x ${PROG} || exit 0
 
 test -n "${OS_VERSION}" || source /etc/init.d/base
 
+mkdir -p $(dirname $CONF)
 prepare_conf ${CONF} ${SYS_CONF} ${BOOT_CONF}
 
 test -s ${CONF} || exit 0
 
 
 start() {
+  msg_begin "Syncing photos"
+  {PROG} sync &
+
   msg_begin "Starting photoframe"
   ${PROG} start > /dev/null &
 
