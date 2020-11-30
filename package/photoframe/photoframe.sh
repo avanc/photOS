@@ -8,6 +8,9 @@ PARAMS_FBV="--noclear --smartfit 30 --delay 1"
 
 NO_IMAGES="/usr/share/photoframe/noimages.png"
 
+ERROR_DIR="/tmp/photoframe"
+mkdir -p $ERROR_DIR
+
 DELAY=3
 
 function read_conf {
@@ -17,17 +20,49 @@ function read_conf {
 }
 
 function sync {
+  error_settopic 10_Sync 
   mkdir -p $FOLDER_IMAGES                                         
   mkdir -p $MOUNTPOINT_DAV                                        
                                                                 
   REMOTE_DAV=$(read_conf)
 
-  mount.davfs -o ro,conf=$DAVFS_CONF $REMOTE_DAV $MOUNTPOINT_DAV
+  ERROR=$(mount.davfs -o ro,conf=$DAVFS_CONF $REMOTE_DAV $MOUNTPOINT_DAV 2>&1 > /dev/null)
+  if [ $? -ne 0 ]
+  then
+    error_write "Mounting $REMOTE_DAV failed: $ERROR"
+  fi
 
-  rsync -vtd --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES
+  # Check if dav is mounted before starting rsync
+  mount | grep $MOUNTPOINT_DAV > /dev/null
+  if [ $? -eq 0 ]
+  then
+    ERROR=$(rsync -vtd --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+    [ $? -eq 0 ] || error_write "Syncing images failed: $ERROR"
 
-  umount $MOUNTPOINT_DAV
+    umount $MOUNTPOINT_DAV
+  fi
 }
+
+ERROR_TOPIC="";
+
+function error_display {
+  TTY=/dev/tty0
+  echo -en "\e[H" > $TTY # Move tty cursor to beginning (1,1)
+  for f in $ERROR_DIR/*.txt; do                                 
+    [[ -f $f ]] || continue                                     
+    cat $f > $TTY                             
+  done
+}
+
+function error_settopic {
+  ERROR_TOPIC=$1.txt;
+  > $ERROR_DIR/$ERROR_TOPIC
+}
+
+function error_write {
+  echo $1 >> $ERROR_DIR/$ERROR_TOPIC
+}
+
 
 
 num_files=0;
@@ -81,6 +116,7 @@ function start {
     echo $IMAGE
 
     fbv $PARAMS_FBV "$IMAGE"
+    error_display
     sleep $DELAY
   done
 }
