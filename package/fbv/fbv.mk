@@ -30,11 +30,6 @@ FBV_DEPENDENCIES += jpeg
 else
 FBV_CONFIGURE_OPTS += --without-libjpeg
 endif
-ifeq ($(BR2_PACKAGE_FBV_GIF),y)
-FBV_DEPENDENCIES += giflib
-else
-FBV_CONFIGURE_OPTS += --without-libungif
-endif
 
 #fbv doesn't support cross-compilation
 define FBV_CONFIGURE_CMDS
