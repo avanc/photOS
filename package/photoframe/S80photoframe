@@ -14,11 +14,11 @@ mkdir -p $(dirname $CONF)
 prepare_conf ${CONF} ${SYS_CONF} ${BOOT_CONF}
 
 test -s ${CONF} || exit 0
-
+chmod 0600 ${CONF}
 
 start() {
   msg_begin "Syncing photos"
-  {PROG} sync &
+  ${PROG} sync &
 
   msg_begin "Starting photoframe"
   ${PROG} start > /dev/null &

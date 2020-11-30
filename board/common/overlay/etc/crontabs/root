@@ -1,6 +1,6 @@
 13 * * * * /usr/sbin/logrotate /etc/logrotate.conf
 0 2 * * 0 /usr/sbin/https-update
 */15 * * * * /usr/sbin/dyndns-update
-*/30 * * * * /bin/photoframe.sh sync
-0    7 * * * /bin/photoframe.sh display on
-0   20 * * * /bin/photoframe.sh display off
+*/30 * * * * /usr/bin/photoframe.sh sync
+0    7 * * * /usr/bin/photoframe.sh display on
+0   20 * * * /usr/bin/photoframe.sh display off
