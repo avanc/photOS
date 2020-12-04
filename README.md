@@ -5,7 +5,7 @@
 Main focus are the Raspberry Pi boards (especially Raspberry Pi Zero W, as the performance is sufficient). But as photoOS is based on the great work of [thingOS](https://github.com/ccrisan/thingos) by ccrisan, which builds on top of [BuildRoot](https://buildroot.uclibc.org), other boards can be easily supported. Just create a ticket for not supported boards.
 
 # Features
-* **Sync**: Photos can be synced from a dav server.
+* **Sync**: Photos can be synced from a [WebDAV](https://en.wikipedia.org/wiki/WebDAV) server.
 * **Offline**: Works also if no internet connection is available.
 * **Power Saving**: By turning the HDMI output off (e.g. by default at night) most monitors go into power savings mode.
 * **Small Footprint**: Images are directly drawn on the framebuffer without the need for any X dependencies.
@@ -65,4 +65,12 @@ Currently, an upgrade is ony available from command line:
 3. Upgrade
 
         fwupdate upgrade <version>
+
+# WebDAV
+photOS snychronizes images from a WebDAV server. Although any standard compliant server should work, this section explains a setup using [Nextcloud](https://docs.nextcloud.com/server/19/user_manual/files/access_webdav.html).
+With Nextcloud and the corresponding smartphone app it is possible to send photos directly from your smartphone to your photo frame. In addition, it is very simple to give other Nextcloud users permissions to also add images to your photo frame.
+
+It is advised to create a separate Nextcloud user (e.g. _photoframe_), as the password needs to be stored in cleartext on that device and gives access to all data on that account. As user _photoframe_ create a folder "photos" and share the folder with your main Nextcloud account and additional accounts or gropus (family, friends, flatmates, ...). All those accounts can now share images with your photo frame.
+
+The WebDAV URL needed for configuring photOS is typically something like https://your.nextcloud/**remote.php/dav/files/**photoframe/photos.
 
