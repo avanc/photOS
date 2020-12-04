@@ -17,9 +17,9 @@ The hardware requirements are minimal and the system is easy to setup, as only a
 # Installation
 
 ## The quick way
-This section describes the setup using a prebuild image. However, there is no prebuild image available yet...
+This section describes the setup using a prebuild image.
 
-1. Download the latest stable release (not availabe yet)
+1. Download the [latest stable release](https://github.com/avanc/photOS/releases/) for your device
 2. Extract the image file from the archive
 3. Write the image file to your SD card:
 
@@ -27,7 +27,7 @@ This section describes the setup using a prebuild image. However, there is no pr
 
     **If you use Linux or OSX**, there's a [writeimage.sh](https://raw.githubusercontent.com/avanc/photos/master/writeimage.sh) script that will do everything for you, including the setup of a wireless network connection and configuration of the dav server credentials. Just run the script as follows (replacing the arguments with appropriate values):
 
-        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img" -n 'yournet:yourkey' -p 'https://davserver/yourphotos:username:password' 
+        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img" -n 'yournet:yourkey' -p 'https://davserver/yourphotos,username,password' 
 
     **Note**: Specify the device path to the disk and not to some partition (e.g. `/dev/mmcblk0` instead of `/dev/mmcblk0p1`).
 
@@ -49,4 +49,20 @@ Although the image can be easily created thanks to thingOS and BuildRoot, the co
         ./build.sh <board_name> mkrelease
 
 4. Write the image to SD card as written above in _The quick way_
+
+
+# Upgrade
+Currently, an upgrade is ony available from command line:
+
+1. Log into your device
+
+        ssh photos-xxxxxxxx
+
+2. Find available versions
+
+        fwupdate versions
+
+3. Upgrade
+
+        fwupdate upgrade <version>
 
