@@ -27,9 +27,29 @@ This section describes the setup using a prebuild image.
 
     **If you use Linux or OSX**, there's a [writeimage.sh](https://raw.githubusercontent.com/avanc/photos/master/writeimage.sh) script that will do everything for you, including the setup of a wireless network connection and configuration of the dav server credentials. Just run the script as follows (replacing the arguments with appropriate values):
 
-        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img" -n 'yournet:yourkey' -p 'https://davserver/yourphotos,username,password' 
+        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img" -n 'YOURSSID:YOURKEY' -p 'https://davserver/yourphotos,username,password' 
 
     **Note**: Specify the device path to the disk and not to some partition (e.g. `/dev/mmcblk0` instead of `/dev/mmcblk0p1`).
+4. Configure photOS (not needed if image was written to SD card using _writeimage.sh_):
+
+    1. Mount first partition (usually /dev/mmcblk0p1)
+    
+        **Note**: Partition should be automatically mounted on Windows when reinserting the SD card
+    
+    2. Create file _wpa_supplicant.conf_ and add your wifi credentials:
+    
+            update_config=1
+            ctrl_interface=/var/run/wpa_supplicant
+            network={
+              scan_ssid=1
+              ssid=YOURSSID
+              psk=YOURKEY
+            }
+
+    3. Create file _photoframe.conf_ and add your WebDAV credentials:
+    
+            https://davserver/yourphotos username password
+
 
 
 ## The other way
@@ -72,5 +92,5 @@ With Nextcloud and the corresponding smartphone app it is possible to send photo
 
 It is advised to create a separate Nextcloud user (e.g. _photoframe_), as the password needs to be stored in cleartext on that device and gives access to all data on that account. As user _photoframe_ create a folder "photos" and share the folder with your main Nextcloud account and additional accounts or gropus (family, friends, flatmates, ...). All those accounts can now share images with your photo frame.
 
-The WebDAV URL needed for configuring photOS is typically something like https://your.nextcloud/**remote.php/dav/files/**photoframe/photos.
+The WebDAV URL needed for configuring photOS is typically something like htt<span>ps</span>://your.nextcloud<b>/remote.php/dav/files/</b>photoframe/photos.
 
