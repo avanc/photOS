@@ -1,3 +1,6 @@
+![photOS](https://github.com/avanc/photOS/blob/master/logo/photos_logo_400x160.png?raw=true)
+
+
 # What's photOS?
 
 **photOS** is a lightweight Linux-based operating system for a DIY photoframe. The software syncs photos with a dav server so new images can be easily added. In my current setup I use [Nextcloud](https://nextcloud.com) as server, but any dav server should work. With Nextcloud I can use the Android app to directly upload images from my mobile phone. In addition, I can share the photo folder with other family members, so they can add photos as well. Even from a distance during pandemies...
