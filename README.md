@@ -42,8 +42,8 @@ This section describes the setup using a prebuild image.
             ctrl_interface=/var/run/wpa_supplicant
             network={
               scan_ssid=1
-              ssid=YOURSSID
-              psk=YOURKEY
+              ssid="YOURSSID"
+              psk="YOURKEY"
             }
 
     3. Create file _photoframe.conf_ and add your WebDAV credentials:
