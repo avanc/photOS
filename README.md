@@ -97,3 +97,7 @@ It is advised to create a separate Nextcloud user (e.g. _photoframe_), as the pa
 
 The WebDAV URL needed for configuring photOS is typically something like htt<span>ps</span>://your.nextcloud<b>/remote.php/dav/files/</b>photoframe/photos.
 
+# Additional information
+For additional information have a look at the [FAQ](https://github.com/avanc/photOS/wiki/FAQ) and the growing wiki pages.
+
+Don't hesitate to add questions as issues labled _question_ if soemthing is unclear.
