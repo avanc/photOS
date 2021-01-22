@@ -30,7 +30,7 @@ This section describes the setup using a prebuild image.
 
     **If you use Linux or OSX**, there's a [writeimage.sh](https://raw.githubusercontent.com/avanc/photos/master/writeimage.sh) script that will do everything for you, including the setup of a wireless network connection and configuration of the dav server credentials. Just run the script as follows (replacing the arguments with appropriate values):
 
-        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img" -n 'YOURSSID:YOURKEY' -p 'https://davserver/yourphotos,username,password' 
+        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img.xz" -n 'YOURSSID:YOURKEY' -p 'https://davserver/yourphotos,username,password' 
 
     **Note**: Specify the device path to the disk and not to some partition (e.g. `/dev/mmcblk0` instead of `/dev/mmcblk0p1`).
 4. Configure photOS (not needed if image was written to SD card using _writeimage.sh_):
