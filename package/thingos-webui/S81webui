@@ -1,0 +1,37 @@
+#!/bin/bash
+
+PROG=/usr/bin/thingos_webui
+
+test -x ${PROG} || exit 0
+
+test -n "${OS_VERSION}" || source /etc/init.d/base
+
+
+start() {
+  msg_begin "Starting webui"
+  ${PROG} start > /dev/null &
+
+  test $? == 0 && msg_done || msg_fail
+}
+
+stop() {
+  msg_begin "Stopping webui"
+  killall -q $(basename ${PROG})
+  test $? == 0 && msg_done || msg_fail
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+esac
+

@@ -1,0 +1,7 @@
+config BR2_PACKAGE_THINGOS_WEBUI
+	bool "thingos-webui"
+	select BR2_PACKAGE_PYTHON_TORNADO
+	help
+	  Small web UI to control Raspberry Pi running thingOS
+
+	  https://github.com/avanc/thingos-webui
