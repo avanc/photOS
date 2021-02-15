@@ -3,6 +3,7 @@
 DAVFS_CONF=/etc/photoframe/davfs2.conf
 MOUNTPOINT_DAV=/data/photoframe/images_webdav
 FOLDER_IMAGES=/data/photoframe/images_local
+WEBDAV_CONF=/data/photoframe/photoframe.conf
 
 PARAMS_FBV="--noclear --smartfit 30 --delay 1"
 
@@ -14,13 +15,18 @@ mkdir -p $ERROR_DIR
 DELAY=3
 
 function read_conf {
-  read -r firstline</data/photoframe/photoframe.conf
+  read -r firstline< $WEBDAV_CONF
   array=($firstline)
   echo ${array[0]}
 }
 
 function sync {
-  error_settopic 10_Sync 
+error_settopic 10_Sync
+
+if [ -f "$WEBDAV_CONF" ]; then
+  chmod 0600 ${WEBDAV_CONF}
+  
+
   mkdir -p $FOLDER_IMAGES                                         
   mkdir -p $MOUNTPOINT_DAV                                        
                                                                 
@@ -41,6 +47,11 @@ function sync {
 
     umount $MOUNTPOINT_DAV
   fi
+else
+
+  error_write "No WebDAV server configured. Go to http://$(hostname)"
+
+fi
 }
 
 ERROR_TOPIC="";

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SYS_CONF="/etc/photoframe/photoframe.conf"
-BOOT_CONF="/boot/photoframe.conf"
 CONF="/data/photoframe/photoframe.conf"
 
 PROG=/usr/bin/photoframe.sh
@@ -11,10 +9,6 @@ test -x ${PROG} || exit 0
 test -n "${OS_VERSION}" || source /etc/init.d/base
 
 mkdir -p $(dirname $CONF)
-prepare_conf ${CONF} ${SYS_CONF} ${BOOT_CONF}
-
-test -s ${CONF} || exit 0
-chmod 0600 ${CONF}
 
 start() {
   msg_begin "Syncing photos"
