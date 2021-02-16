@@ -30,7 +30,7 @@ This section describes the setup using a prebuild image.
 
     **If you use Linux or OSX**, there's a [writeimage.sh](https://raw.githubusercontent.com/avanc/photos/master/writeimage.sh) script that will do everything for you, including the setup of a wireless network connection and configuration of the dav server credentials. Just run the script as follows (replacing the arguments with appropriate values):
 
-        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img.xz" -n 'YOURSSID:YOURKEY' -p 'https://davserver/yourphotos,username,password' 
+        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img.xz" -n 'YOURSSID:YOURKEY' 
 
     **Note**: Specify the device path to the disk and not to some partition (e.g. `/dev/mmcblk0` instead of `/dev/mmcblk0p1`).
 4. Configure photOS (not needed if image was written to SD card using _writeimage.sh_):
@@ -49,11 +49,7 @@ This section describes the setup using a prebuild image.
               psk="YOURKEY"
             }
 
-    3. Create file _photoframe.conf_ and add your WebDAV credentials:
-    
-            https://davserver/yourphotos username password
-
-
+5. After first boot, photOS greets you with a placholder image and points you to the URL of the webui, were the WebDAV credentials and other stuff can be configured
 
 ## The other way
 Although the image can be easily created thanks to thingOS and BuildRoot, the compilation of the whole software can take a few hours.
@@ -74,20 +70,8 @@ Although the image can be easily created thanks to thingOS and BuildRoot, the co
 4. Write the image to SD card as written above in _The quick way_
 
 
-# Upgrade
-Currently, an upgrade is ony available from command line:
-
-1. Log into your device
-
-        ssh photos-xxxxxxxx
-
-2. Find available versions
-
-        fwupdate versions
-
-3. Upgrade
-
-        fwupdate upgrade <version>
+# Update
+An update to a newer version can be easily triggered using the webui.
 
 # WebDAV
 photOS snychronizes images from a WebDAV server. Although any standard compliant server should work, this section explains a setup using [Nextcloud](https://docs.nextcloud.com/server/19/user_manual/files/access_webdav.html).
