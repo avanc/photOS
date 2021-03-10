@@ -1,4 +1,4 @@
-![photOS](https://github.com/avanc/photOS/blob/master/logo/photos_logo.svg?raw=true)
+<img src="https://github.com/avanc/photOS/blob/master/logo/photos_logo.svg?raw=true" alt="photOS" width="300"/>
 
 
 # What's photOS?
