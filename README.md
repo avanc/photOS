@@ -18,57 +18,7 @@ Main focus are the Raspberry Pi boards (especially Raspberry Pi Zero W, as the p
 The hardware requirements are minimal and the system is easy to setup, as only a Raspberry Pi and an old monitor is needed. But you can spend a lot of time in the woodwork :-)
 
 # Installation
-
-## The quick way
-This section describes the setup using a prebuild image.
-
-1. Download the [latest stable release](https://github.com/avanc/photOS/releases/) for your device
-2. Extract the image file from the archive
-3. Write the image file to your SD card:
-
-    **If you use Windows**, just follow [these instructions](http://www.raspberrypi.org/documentation/installation/installing-images/windows.md).
-
-    **If you use Linux or OSX**, there's a [writeimage.sh](https://raw.githubusercontent.com/avanc/photos/master/writeimage.sh) script that will do everything for you, including the setup of a wireless network connection and configuration of the dav server credentials. Just run the script as follows (replacing the arguments with appropriate values):
-
-        ./writeimage.sh -d /dev/mmcblk0 -i "/path/to/photos.img.xz" -n 'YOURSSID:YOURKEY' 
-
-    **Note**: Specify the device path to the disk and not to some partition (e.g. `/dev/mmcblk0` instead of `/dev/mmcblk0p1`).
-4. Configure photOS (not needed if image was written to SD card using _writeimage.sh_):
-
-    1. Mount first partition (usually /dev/mmcblk0p1)
-    
-        **Note**: Partition should be automatically mounted on Windows when reinserting the SD card
-    
-    2. Create file _wpa_supplicant.conf_ and add your wifi credentials:
-    
-            update_config=1
-            ctrl_interface=/var/run/wpa_supplicant
-            network={
-              scan_ssid=1
-              ssid="YOURSSID"
-              psk="YOURKEY"
-            }
-
-5. After first boot, photOS greets you with a placholder image and points you to the URL of the webui, were the WebDAV credentials and other stuff can be configured
-
-## The other way
-Although the image can be easily created thanks to thingOS and BuildRoot, the compilation of the whole software can take a few hours.
-
-1. Clone the repository:
-
-        git clone https://github.com/avanc/photOS.git
-    
-2. Compile the whole stuff and take a rest:
-
-        cd photOS
-        ./build.sh <board_name>
-    
-3. Build the compressed image:
-
-        ./build.sh <board_name> mkrelease
-
-4. Write the image to SD card as written above in _The quick way_
-
+The installation process is documented in the [wiki](https://github.com/avanc/photOS/wiki/Installation).
 
 # Update
 An update to a newer version can be easily triggered using the webui.
