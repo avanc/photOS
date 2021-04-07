@@ -446,8 +446,9 @@ function do_flash_boot() {
 
     cp -r /boot ${FW_DIR}/old_boot
     umount /boot
-
+    
     # prevent unwanted reboots during upgrade
+    panic_inhibit
     mount -o remount,rw /
     mv /sbin/reboot /sbin/reboot.bak
     ln -s /bin/true /sbin/reboot
