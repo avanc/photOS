@@ -1,0 +1,14 @@
+name: build 
+on:
+  push:
+    branches: [ci-test]
+
+  # Allow manual triggering of action
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./build.sh raspberrypi
