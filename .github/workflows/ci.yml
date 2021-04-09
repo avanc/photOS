@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Build RPI image
         run: ./build.sh raspberrypi
+        run: ./build.sh raspberrypi mkrelease
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
