@@ -17,15 +17,15 @@ jobs:
         run: |
           ./build.sh raspberrypi
           ./build.sh raspberrypi mkrelease
-      - name: Build RPI1 image
+      - name: Build RPI2 image
         run: |
           ./build.sh raspberrypi2
           ./build.sh raspberrypi2 mkrelease
-      - name: Build RPI2 image
+      - name: Build RPI3 image
         run: |
           ./build.sh raspberrypi3
           ./build.sh raspberrypi3 mkrelease
-      - name: Build RPI1 image
+      - name: Build RPI4 image
         run: |
           ./build.sh raspberrypi4
           ./build.sh raspberrypi4 mkrelease
