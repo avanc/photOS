@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  create_image_RPI1
+  create_image_RPI1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,7 +23,7 @@ jobs:
           ./build.sh raspberrypi mkrelease
           mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
           
-  create_image_RPI2
+  create_image_RPI2:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,7 +38,7 @@ jobs:
           ./build.sh raspberrypi2 mkrelease
           mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
 
-  create_image_RPI3
+  create_image_RPI3:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,7 +53,7 @@ jobs:
           ./build.sh raspberrypi3 mkrelease
           mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
 
-  create_image_RPI4
+  create_image_RPI4:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -68,7 +68,7 @@ jobs:
           ./build.sh raspberrypi4 mkrelease
           mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
 
-  create_Release
+  create_Release:
     needs: [ create_image_RPI1,  create_image_RPI2,  create_image_RPI3,  create_image_RPI4 ]
     runs-on: ubuntu-latest
     steps:
