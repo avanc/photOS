@@ -1,7 +1,8 @@
-name: build 
+name: Build Release
 on:
   push:
-    branches: [ci-test]
+    tags:
+      - 'v*.*.*'
 
   # Allow manual triggering of action
   workflow_dispatch:
@@ -10,5 +11,14 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: ./build.sh raspberrypi
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build RPI image
+        run: ./build.sh raspberrypi
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            output/raspberrypi/images/photOS-raspberrypi-*.img.xz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
