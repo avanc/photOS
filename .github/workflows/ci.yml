@@ -19,6 +19,7 @@ jobs:
           key: photos-RPI1-${{ github.sha }}
       - name: Build RPI1 image
         run: |
+          mkdir -p output/raspberrypi/images/
           cat "Hello" > output/raspberrypi/images/photOS-raspberrypi.1.1.1.img.xz
 
         # ./build.sh raspberrypi
@@ -36,6 +37,7 @@ jobs:
           key: photos-RPI2-${{ github.sha }}
       - name: Build RPI2 image
         run: |
+          mkdir -p output/raspberrypi2/images/
           cat "World" > output/raspberrypi2/images/photOS-raspberrypi2.1.1.1.img.xz
 
 
@@ -54,6 +56,7 @@ jobs:
           key: photos-RPI3-${{ github.sha }}
       - name: Build RPI3 image
         run: |
+          mkdir -p output/raspberrypi3/images/
           cat "Hallo" > output/raspberrypi3/images/photOS-raspberrypi3.1.1.1.img.xz
 
 #./build.sh raspberrypi3
@@ -71,6 +74,7 @@ jobs:
           key: photos-RPI4-${{ github.sha }}
       - name: Build RPI4 image
         run: |
+          mkdir -p output/raspberrypi4/images/
           cat "Welt" > output/raspberrypi4/images/photOS-raspberrypi4.1.1.1.img.xz
 
 #./build.sh raspberrypi4
