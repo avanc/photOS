@@ -21,12 +21,8 @@ jobs:
       - name: Build RPI1 image
         if: steps.caching.outputs.cache-hit != 'true'
         run: |
-          mkdir -p output/raspberrypi/images/
-          echo "Hello" > output/raspberrypi/images/photOS-raspberrypi.1.1.1.img.xz
-
-        # ./build.sh raspberrypi
-        # ./build.sh raspberrypi mkrelease
-        # mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
+          ./build.sh raspberrypi
+          ./build.sh raspberrypi mkrelease
           
   create_image_RPI2:
     runs-on: ubuntu-latest
@@ -41,13 +37,8 @@ jobs:
       - name: Build RPI2 image
         if: steps.caching.outputs.cache-hit != 'true'
         run: |
-          mkdir -p output/raspberrypi2/images/
-          echo "World" > output/raspberrypi2/images/photOS-raspberrypi2.1.1.1.img.xz
-
-
-# ./build.sh raspberrypi2
-#          ./build.sh raspberrypi2 mkrelease
-#          mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
+          ./build.sh raspberrypi2
+          ./build.sh raspberrypi2 mkrelease
 
   create_image_RPI3:
     runs-on: ubuntu-latest
@@ -62,12 +53,8 @@ jobs:
       - name: Build RPI3 image
         if: steps.caching.outputs.cache-hit != 'true'
         run: |
-          mkdir -p output/raspberrypi3/images/
-          echo "Hallo" > output/raspberrypi3/images/photOS-raspberrypi3.1.1.1.img.xz
-
-#./build.sh raspberrypi3
-#          ./build.sh raspberrypi3 mkrelease
-#          mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
+          ./build.sh raspberrypi3
+          ./build.sh raspberrypi3 mkrelease
 
   create_image_RPI4:
     runs-on: ubuntu-latest
@@ -82,12 +69,8 @@ jobs:
       - name: Build RPI4 image
         if: steps.caching.outputs.cache-hit != 'true'
         run: |
-          mkdir -p output/raspberrypi4/images/
-          echo "Welt" > output/raspberrypi4/images/photOS-raspberrypi4.1.1.1.img.xz
-
-#./build.sh raspberrypi4
-#          ./build.sh raspberrypi4 mkrelease
-#          mv output/raspberrypi/images/photOS-raspberrypi*.img.xz images/
+          ./build.sh raspberrypi4
+          ./build.sh raspberrypi4 mkrelease
 
   create_Release:
     needs: [ create_image_RPI1,  create_image_RPI2,  create_image_RPI3,  create_image_RPI4 ]
