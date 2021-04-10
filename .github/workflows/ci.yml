@@ -20,7 +20,7 @@ jobs:
       - name: Build RPI1 image
         run: |
           mkdir -p output/raspberrypi/images/
-          cat "Hello" > output/raspberrypi/images/photOS-raspberrypi.1.1.1.img.xz
+          echo "Hello" > output/raspberrypi/images/photOS-raspberrypi.1.1.1.img.xz
 
         # ./build.sh raspberrypi
         # ./build.sh raspberrypi mkrelease
@@ -38,7 +38,7 @@ jobs:
       - name: Build RPI2 image
         run: |
           mkdir -p output/raspberrypi2/images/
-          cat "World" > output/raspberrypi2/images/photOS-raspberrypi2.1.1.1.img.xz
+          echo "World" > output/raspberrypi2/images/photOS-raspberrypi2.1.1.1.img.xz
 
 
 # ./build.sh raspberrypi2
@@ -57,7 +57,7 @@ jobs:
       - name: Build RPI3 image
         run: |
           mkdir -p output/raspberrypi3/images/
-          cat "Hallo" > output/raspberrypi3/images/photOS-raspberrypi3.1.1.1.img.xz
+          echo "Hallo" > output/raspberrypi3/images/photOS-raspberrypi3.1.1.1.img.xz
 
 #./build.sh raspberrypi3
 #          ./build.sh raspberrypi3 mkrelease
@@ -75,7 +75,7 @@ jobs:
       - name: Build RPI4 image
         run: |
           mkdir -p output/raspberrypi4/images/
-          cat "Welt" > output/raspberrypi4/images/photOS-raspberrypi4.1.1.1.img.xz
+          echo "Welt" > output/raspberrypi4/images/photOS-raspberrypi4.1.1.1.img.xz
 
 #./build.sh raspberrypi4
 #          ./build.sh raspberrypi4 mkrelease
