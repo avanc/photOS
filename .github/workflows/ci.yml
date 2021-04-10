@@ -14,10 +14,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - uses: actions/cache@v2
+        id: caching
         with:
           path: output/raspberrypi/images/
           key: photos-RPI1-${{ github.sha }}
       - name: Build RPI1 image
+        if: steps.caching.outputs.cache-hit != 'true'
         run: |
           mkdir -p output/raspberrypi/images/
           echo "Hello" > output/raspberrypi/images/photOS-raspberrypi.1.1.1.img.xz
@@ -32,10 +34,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - uses: actions/cache@v2
+        id: caching
         with:
           path: output/raspberrypi2/images/
           key: photos-RPI2-${{ github.sha }}
       - name: Build RPI2 image
+        if: steps.caching.outputs.cache-hit != 'true'
         run: |
           mkdir -p output/raspberrypi2/images/
           echo "World" > output/raspberrypi2/images/photOS-raspberrypi2.1.1.1.img.xz
@@ -51,10 +55,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - uses: actions/cache@v2
+        id: caching
         with:
           path: output/raspberrypi3/images/
           key: photos-RPI3-${{ github.sha }}
       - name: Build RPI3 image
+        if: steps.caching.outputs.cache-hit != 'true'
         run: |
           mkdir -p output/raspberrypi3/images/
           echo "Hallo" > output/raspberrypi3/images/photOS-raspberrypi3.1.1.1.img.xz
@@ -69,10 +75,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - uses: actions/cache@v2
+        id: caching
         with:
           path: output/raspberrypi4/images/
           key: photos-RPI4-${{ github.sha }}
       - name: Build RPI4 image
+        if: steps.caching.outputs.cache-hit != 'true'
         run: |
           mkdir -p output/raspberrypi4/images/
           echo "Welt" > output/raspberrypi4/images/photOS-raspberrypi4.1.1.1.img.xz
