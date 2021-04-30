@@ -1,0 +1,105 @@
+name: Build Release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+  # Allow manual triggering of action
+  workflow_dispatch:
+
+jobs:
+  create_image_RPI1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: caching
+        with:
+          path: output/raspberrypi/images/
+          key: photos-RPI1-${{ github.sha }}
+      - name: Build RPI1 image
+        if: steps.caching.outputs.cache-hit != 'true'
+        run: |
+          ./build.sh raspberrypi
+          ./build.sh raspberrypi mkrelease
+          
+  create_image_RPI2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: caching
+        with:
+          path: output/raspberrypi2/images/
+          key: photos-RPI2-${{ github.sha }}
+      - name: Build RPI2 image
+        if: steps.caching.outputs.cache-hit != 'true'
+        run: |
+          ./build.sh raspberrypi2
+          ./build.sh raspberrypi2 mkrelease
+
+  create_image_RPI3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: caching
+        with:
+          path: output/raspberrypi3/images/
+          key: photos-RPI3-${{ github.sha }}
+      - name: Build RPI3 image
+        if: steps.caching.outputs.cache-hit != 'true'
+        run: |
+          ./build.sh raspberrypi3
+          ./build.sh raspberrypi3 mkrelease
+
+  create_image_RPI4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: caching
+        with:
+          path: output/raspberrypi4/images/
+          key: photos-RPI4-${{ github.sha }}
+      - name: Build RPI4 image
+        if: steps.caching.outputs.cache-hit != 'true'
+        run: |
+          ./build.sh raspberrypi4
+          ./build.sh raspberrypi4 mkrelease
+
+  create_Release:
+    needs: [ create_image_RPI1,  create_image_RPI2,  create_image_RPI3,  create_image_RPI4 ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: output/raspberrypi/images/
+          key: photos-RPI1-${{ github.sha }}
+      - uses: actions/cache@v2
+        with:
+          path: output/raspberrypi2/images/
+          key: photos-RPI2-${{ github.sha }}
+      - uses: actions/cache@v2
+        with:
+          path: output/raspberrypi3/images/
+          key: photos-RPI3-${{ github.sha }}
+      - uses: actions/cache@v2
+        with:
+          path: output/raspberrypi4/images/
+          key: photos-RPI4-${{ github.sha }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            output/raspberrypi/images/*.img.xz
+            output/raspberrypi2/images/*.img.xz
+            output/raspberrypi3/images/*.img.xz
+            output/raspberrypi4/images/*.img.xz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
