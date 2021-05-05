@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-THINGOS_WEBUI_VERSION = 3f96e80
+THINGOS_WEBUI_VERSION = d69caf5
 THINGOS_WEBUI_SITE = https://github.com/avanc/thingos-webui.git
 THINGOS_WEBUI_SITE_METHOD = git
 
