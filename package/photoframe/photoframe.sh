@@ -1,9 +1,9 @@
 #! /bin/sh
-
+CONF_DIR=/data/photoframe
 DAVFS_CONF=/etc/photoframe/davfs2.conf
 MOUNTPOINT_DAV=/data/photoframe/images_webdav
 FOLDER_IMAGES=/data/photoframe/images_local
-WEBDAV_CONF=/data/photoframe/photoframe.conf
+WEBDAV_CONF=${CONF_DIR}/conf/webdav.conf
 
 PARAMS_FBV="--noclear --smartfit 30 --delay 1"
 
@@ -12,7 +12,13 @@ NO_IMAGES="/usr/share/photoframe/noimages.png"
 ERROR_DIR="/tmp/photoframe"
 mkdir -p $ERROR_DIR
 
-DELAY=3
+SLIDESHOW_DELAY=3
+
+if [ -e ${CONF_DIR}/conf/photoframe.conf ]
+then
+  source ${CONF_DIR}/conf/photoframe.conf
+fi
+
 
 function read_conf {
   read -r firstline< $WEBDAV_CONF
@@ -128,7 +134,7 @@ function start {
 
     fbv $PARAMS_FBV "$IMAGE"
     error_display
-    sleep $DELAY
+    sleep $SLIDESHOW_DELAY
   done
 }
 

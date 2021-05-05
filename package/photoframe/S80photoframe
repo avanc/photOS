@@ -1,6 +1,5 @@
 #!/bin/bash
 
-CONF="/data/photoframe/photoframe.conf"
 
 PROG=/usr/bin/photoframe.sh
 
@@ -8,7 +7,6 @@ test -x ${PROG} || exit 0
 
 test -n "${OS_VERSION}" || source /etc/init.d/base
 
-mkdir -p $(dirname $CONF)
 
 start() {
   msg_begin "Syncing photos"

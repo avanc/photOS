@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LATEST=0
+LATEST=1
 
 CONF_DIR=/data/photoframe
 VERSION_FILE=${CONF_DIR}/.folderversion
@@ -41,18 +41,20 @@ start() {
   then
     # Fresh installation
     echo Initialising configuration
-    mkdir -p $CONF_DIR
+    mkdir -p $CONF_DIR/conf
     echo $LATEST > $VERSION_FILE
     CURRENT=$LATEST
   fi
 
-#  if [ $CURRENT -eq 0 ]
-#  then
-#    NEXT=1
-#    echo Upgrading configuration from version $CURRENT to $NEXT
-#    echo $NEXT > $VERSION_FILE
-#    CURRENT=$NEXT
-#  fi
+  if [ $CURRENT -eq 0 ]
+  then
+    NEXT=1
+    echo Upgrading configuration from version $CURRENT to $NEXT
+    mkdir -p $CONF_DIR/conf
+	mv $CONF_DIR/photoframe.conf $CONF_DIR/conf/webdav.conf
+	echo $NEXT > $VERSION_FILE
+    CURRENT=$NEXT
+  fi
 
 }
 
