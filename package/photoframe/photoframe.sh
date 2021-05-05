@@ -127,6 +127,9 @@ function get_image {
 
 
 function start {
+  counter=0
+  error_settopic 01_Startup
+  error_write "Go to http://$(hostname) to configure photOS"
 
   while true; do
     IMAGE=$(get_image)
@@ -135,6 +138,13 @@ function start {
     fbv $PARAMS_FBV "$IMAGE"
     error_display
     sleep $SLIDESHOW_DELAY
+
+    counter=$((counter+1))
+    if [ $counter -eq 10 ]
+    then
+      error_settopic 01_Startup
+    fi
+
   done
 }
 
