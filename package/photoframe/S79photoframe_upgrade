@@ -1,0 +1,77 @@
+#!/bin/bash
+
+LATEST=0
+
+CONF_DIR=/data/photoframe
+VERSION_FILE=${CONF_DIR}/.folderversion
+
+
+get_folderversion() {
+  if [ -e $VERSION_FILE ]
+  then
+    cat $VERSION_FILE
+  elif [ -e $CONF_DIR ]
+  then
+    # Older configuration without VERSION_FILE
+    echo 0  
+  else
+    # Fresh installation without any configuration
+    echo -1
+  fi
+}
+
+start() {
+  CURRENT=$(get_folderversion)
+  #echo Folder Version: $CURRENT
+
+  if [ $CURRENT -eq $LATEST ]
+  then
+    echo "Up to date"
+    exit 0
+  fi
+
+  if [ $CURRENT -gt $LATEST ]
+  then
+    echo "Folder version is greater than the supported version! Something is wrong!"
+    exit 1
+  fi
+
+
+  if [ $CURRENT -eq -1 ]
+  then
+    # Fresh installation
+    echo Initialising configuration
+    mkdir -p $CONF_DIR
+    echo $LATEST > $VERSION_FILE
+    CURRENT=$LATEST
+  fi
+
+#  if [ $CURRENT -eq 0 ]
+#  then
+#    NEXT=1
+#    echo Upgrading configuration from version $CURRENT to $NEXT
+#    echo $NEXT > $VERSION_FILE
+#    CURRENT=$NEXT
+#  fi
+
+}
+
+stop() {
+  exit 0
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+esac
+
