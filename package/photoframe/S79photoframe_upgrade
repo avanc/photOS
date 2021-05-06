@@ -30,6 +30,7 @@ start() {
     exit 0
   fi
 
+
   if [ $CURRENT -gt $LATEST ]
   then
     echo "Folder version is greater than the supported version! Something is wrong!"
@@ -46,15 +47,28 @@ start() {
     CURRENT=$LATEST
   fi
 
+
   if [ $CURRENT -eq 0 ]
   then
     NEXT=1
     echo Upgrading configuration from version $CURRENT to $NEXT
+
+    # Create new config folder and move configuration
     mkdir -p $CONF_DIR/conf
 	mv $CONF_DIR/photoframe.conf $CONF_DIR/conf/webdav.conf
-	echo $NEXT > $VERSION_FILE
+
+    # Remove overlay copy if delay was changed manually in the past
+    if [ -e /data/usr/bin/photoframe.sh ]
+	then
+	  rm /data/usr/bin/photoframe.sh
+	  mount -o remount /usr
+	fi
+
+    echo $NEXT > $VERSION_FILE
     CURRENT=$NEXT
   fi
+
+
 
 }
 
