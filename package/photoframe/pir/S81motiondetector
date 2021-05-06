@@ -1,0 +1,42 @@
+#!/bin/bash
+
+
+PROG=/usr/bin/motion_detector.py
+CONF=/data/photoframe/conf/motion_detection.conf
+
+test -x ${PROG} || exit 0
+
+test -e ${CONF} || exit 0
+
+test -n "${OS_VERSION}" || source /etc/init.d/base
+
+
+
+start() {
+  msg_begin "Starting motion detection"
+  ${PROG} > /dev/null &
+
+  test $? == 0 && msg_done || msg_fail
+}
+
+stop() {
+  msg_begin "Stopping motion detection"
+  killall -q $(basename ${PROG})
+  test $? == 0 && msg_done || msg_fail
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+esac
+
