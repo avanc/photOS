@@ -4,7 +4,7 @@ from configparser import ConfigParser
 import shlex
 
 parser = ConfigParser()
-with open("/data/photoframe/motion_detector.conf") as stream:
+with open("/data/photoframe/conf/motion_detector.conf") as stream:
     parser.read_string("[CONFIG]\n" + stream.read())
 
 config=parser['CONFIG']
