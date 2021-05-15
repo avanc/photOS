@@ -135,7 +135,9 @@ function start {
     IMAGE=$(get_image)
     echo $IMAGE
 
-    fbv $PARAMS_FBV "$IMAGE"
+	IMAGE2=/tmp/photoframe.image                                   
+    convert -auto-orient "$IMAGE" "$IMAGE2"                                               
+    fbv $PARAMS_FBV "$IMAGE2" 
     error_display
     sleep $SLIDESHOW_DELAY
 
