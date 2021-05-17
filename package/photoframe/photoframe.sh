@@ -13,6 +13,7 @@ ERROR_DIR="/tmp/photoframe"
 mkdir -p $ERROR_DIR
 
 SLIDESHOW_DELAY=3
+SHUFFLE=true
 
 if [ -e ${CONF_DIR}/conf/photoframe.conf ]
 then
@@ -83,6 +84,7 @@ function error_write {
 
 
 num_files=0;
+file_num=0;
 
 function get_image {
   local rnd_num
@@ -92,10 +94,17 @@ function get_image {
 
   if [ $num_files -gt 0 ]
   then
-    rnd_num=$(( $RANDOM % $num_files ))
+    if [ "$SHUFFLE" = true ]
+    then
+      rnd_num=$(( $RANDOM % $num_files ))
+    else
+      rnd_num=$file_num
+      file_num=$((file_num+1));
+      file_num=$((file_num % $num_files));
+    fi
   fi
 
-  local IMAGE
+
   IMAGE=""
   for f in $FOLDER_IMAGES/*; do
     [[ -f $f ]] || continue
@@ -117,14 +126,14 @@ function get_image {
     then
       IMAGE=$NO_IMAGES
     else
-      IMAGE=$(get_image)
+      get_image
     fi
   fi                                                        
-
-  echo $IMAGE
 }
 
 
+
+IMAGE=$NO_IMAGES
 
 function start {
   counter=0
@@ -132,12 +141,12 @@ function start {
   error_write "Go to http://$(hostname) to configure photOS"
 
   while true; do
-    IMAGE=$(get_image)
+    get_image
     echo $IMAGE
 
-	IMAGE2=/tmp/photoframe.image                                   
+    IMAGE2=/tmp/photoframe.image
     convert -auto-orient "$IMAGE" "$IMAGE2"                                               
-    fbv $PARAMS_FBV "$IMAGE2" 
+    fbv $PARAMS_FBV "$IMAGE2"
     error_display
     sleep $SLIDESHOW_DELAY
 
