@@ -14,7 +14,7 @@ test -n "${OS_VERSION}" || source /etc/init.d/base
 
 start() {
   msg_begin "Starting motion detection"
-  ${PROG} > /dev/null &
+  ${PROG} &> /dev/null &
 
   test $? == 0 && msg_done || msg_fail
 }
