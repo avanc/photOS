@@ -16,7 +16,7 @@ define LIBJPEG_REMOVE_USELESS_TOOLS
 	rm -f $(addprefix $(TARGET_DIR)/usr/bin/,cjpeg djpeg jpegtran rdjpgcom wrjpgcom)
 endef
 
-LIBJPEG_POST_INSTALL_TARGET_HOOKS += LIBJPEG_REMOVE_USELESS_TOOLS
+#LIBJPEG_POST_INSTALL_TARGET_HOOKS += LIBJPEG_REMOVE_USELESS_TOOLS
 
 define LIBJPEG_INSTALL_STAGING_PC
 	$(INSTALL) -D -m 0644 package/libjpeg/libjpeg.pc.in \
