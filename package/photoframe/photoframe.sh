@@ -147,7 +147,7 @@ function start {
     IMAGE2=/tmp/photoframe.image
     cp $IMAGE $IMAGE2
 #    convert -auto-orient "$IMAGE" "$IMAGE2"                                               
-    jhead -autorot $IMAGE2
+    jhead -autorot $IMAGE2 &> /dev/null
     fbv $PARAMS_FBV "$IMAGE2"
     error_display
     sleep $SLIDESHOW_DELAY
