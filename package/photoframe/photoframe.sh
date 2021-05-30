@@ -149,7 +149,8 @@ function start {
 
     # abuse error reporting to show the path of the current picture
     error_settopic 02_Current
-    error_write "$IMAGE"
+	#don't show the FOLDER_IMAGES prefix
+    error_write "$( echo "$IMAGE" | sed -e "s|^${FOLDER_IMAGES}/||" )"
 
     error_display
     sleep $SLIDESHOW_DELAY
