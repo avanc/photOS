@@ -6,7 +6,7 @@ FOLDER_IMAGES=/data/photoframe/images_local
 WEBDAV_CONF=${CONF_DIR}/conf/webdav.conf
 
 #File that lists all available photos. Will be overwritten on sync
-PHOTO_FILE_LIST=/data/photoframe/filenames.txt
+PHOTO_FILE_LIST=${CONF_DIR}/conf/filelist.txt
 
 PARAMS_FBV="--noclear --smartfit 30 --delay 1"
 
@@ -17,6 +17,8 @@ mkdir -p $ERROR_DIR
 
 SLIDESHOW_DELAY=3
 SHUFFLE=true
+SHOW_FILENAME=false
+
 
 if [ -e ${CONF_DIR}/conf/photoframe.conf ]
 then
@@ -52,13 +54,13 @@ if [ -f "$WEBDAV_CONF" ]; then
   mount | grep $MOUNTPOINT_DAV > /dev/null
   if [ $? -eq 0 ]
   then
-    ERROR=$(rsync -vtr --include '*.png' --include '*.jpg' --include '*.JPG' --exclude '*.mp4' --exclude '*.MOV' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+    # Only sync supported images
+    ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
     [ $? -eq 0 ] || error_write "Syncing images failed: $ERROR"
 
     umount $MOUNTPOINT_DAV
 
-    find $FOLDER_IMAGES -type f -iname '*\.jpg' -o -iname '*\.png' > $PHOTO_FILE_LIST
-    chmod a+r $PHOTO_FILE_LIST
+    find $FOLDER_IMAGES -type f -iname '*\.jpg' -o -iname '*\.png' | sort > $PHOTO_FILE_LIST
   fi
 else
 
@@ -108,11 +110,13 @@ function get_image {
   then
     if [ "$SHUFFLE" = true ]
     then
-      rnd_num=$(( $RANDOM % $num_files ))
+      # sed counts from 1 to N (not 0 to N-1)
+      rnd_num=$(( ( $RANDOM % $num_files ) + 1 ))
     else
-      rnd_num=$file_num
-      file_num=$((file_num+1));
+      # sed counts from 1 to N (not 0 to N-1)
       file_num=$((file_num % $num_files));
+      file_num=$((file_num+1));
+      rnd_num=$file_num
     fi
     IMAGE=$(sed "${rnd_num}q;d" $PHOTO_FILE_LIST)
   fi
@@ -147,10 +151,13 @@ function start {
     jhead -autorot $IMAGE2 &> /dev/null
     fbv $PARAMS_FBV "$IMAGE2"
 
-    # abuse error reporting to show the path of the current picture
-    error_settopic 02_Current
-	#don't show the FOLDER_IMAGES prefix
-    error_write "$( echo "$IMAGE" | sed -e "s|^${FOLDER_IMAGES}/||" )"
+    if [ "$SHOW_FILENAME" = true ]
+    then
+      # abuse error reporting to show the path of the current picture
+      error_settopic 02_Current
+	  #don't show the FOLDER_IMAGES prefix
+      error_write "$( echo "$IMAGE" | sed -e "s|^${FOLDER_IMAGES}/||" )"
+    fi
 
     error_display
     sleep $SLIDESHOW_DELAY
