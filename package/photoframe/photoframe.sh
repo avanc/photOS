@@ -55,12 +55,12 @@ if [ -f "$WEBDAV_CONF" ]; then
   if [ $? -eq 0 ]
   then
     # Only sync supported images
-    ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+    ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
     [ $? -eq 0 ] || error_write "Syncing images failed: $ERROR"
 
     umount $MOUNTPOINT_DAV
 
-    find $FOLDER_IMAGES -type f -iname '*\.jpg' -o -iname '*\.png' | sort > $PHOTO_FILE_LIST
+    find $FOLDER_IMAGES -type f -iname '*\.jpg' -o -iname '*\.jpeg' -o -iname '*\.png' | sort > $PHOTO_FILE_LIST
   fi
 else
 
