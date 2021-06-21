@@ -1,9 +1,15 @@
 #! /bin/sh
 CONF_DIR=/data/photoframe
-DAVFS_CONF=/etc/photoframe/davfs2.conf
 MOUNTPOINT_DAV=/data/photoframe/images_webdav
 FOLDER_IMAGES=/data/photoframe/images_local
 WEBDAV_CONF=${CONF_DIR}/conf/webdav.conf
+
+if [ -e ${CONF_DIR}/conf/webdav_cert.pem ]
+then
+  DAVFS_CONF=/etc/photoframe/davfs2_owncert.conf
+else
+  DAVFS_CONF=/etc/photoframe/davfs2.conf
+fi
 
 #File that lists all available photos. Will be overwritten on sync
 PHOTO_FILE_LIST=${CONF_DIR}/conf/filelist.txt
