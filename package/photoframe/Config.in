@@ -3,6 +3,8 @@ config BR2_PACKAGE_PHOTOFRAME
 	select BR2_PACKAGE_DAVFS2
 	select BR2_PACKAGE_RSYNC
 	select BR2_PACKAGE_FBV
+	select BR2_PACKAGE_OMXPLAYER
+	select BR2_PACKAGE_FILE
 	help
 	  Small photo frame app to show images from an dav storage onto
 	  the framebuffer.
