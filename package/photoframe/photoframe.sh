@@ -61,12 +61,12 @@ if [ -f "$WEBDAV_CONF" ]; then
   if [ $? -eq 0 ]
   then
     # Only sync supported images
-    ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+    ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*.mp4' --include '*.MP4' --include '*.mov' --include '*.MOV' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
     [ $? -eq 0 ] || error_write "Syncing images failed: $ERROR"
 
     umount $MOUNTPOINT_DAV
 
-    find $FOLDER_IMAGES -type f -iname '*\.jpg' -o -iname '*\.jpeg' -o -iname '*\.png' | sort > $PHOTO_FILE_LIST
+    find $FOLDER_IMAGES -type f -iname '*\.jpg' -o -iname '*\.jpeg' -o -iname '*\.png' -o -iname '*\.mp4' -o -iname '*\.mov' | sort > $PHOTO_FILE_LIST
   fi
 else
 
@@ -151,11 +151,23 @@ function start {
     get_image
     echo $IMAGE
 
-    IMAGE2=/tmp/photoframe.image
-    cp "$IMAGE" "$IMAGE2"
-#    convert -auto-orient "$IMAGE" "$IMAGE2"
-    jhead -autorot $IMAGE2 &> /dev/null
-    fbv $PARAMS_FBV "$IMAGE2"
+    IS_IMAGE=false
+
+    if file "$IMAGE" | cut -d':' -f2 |grep -qE 'image|bitmap'
+    then
+      IS_IMAGE=true
+    fi
+
+    if [ "$IS_IMAGE" = true ]
+    then
+      IMAGE2=/tmp/photoframe.image
+      cp "$IMAGE" "$IMAGE2"
+      #    convert -auto-orient "$IMAGE" "$IMAGE2"
+      jhead -autorot $IMAGE2 &> /dev/null
+      fbv $PARAMS_FBV "$IMAGE2"
+    else
+      omxplayer  "$IMAGE"
+    fi
 
     if [ "$SHOW_FILENAME" = true ]
     then
@@ -166,7 +178,11 @@ function start {
     fi
 
     error_display
-    sleep $SLIDESHOW_DELAY
+
+    if [ "$IS_IMAGE" = true ]
+    then
+      sleep $SLIDESHOW_DELAY
+    fi
 
     counter=$((counter+1))
     if [ $counter -eq 10 ]
