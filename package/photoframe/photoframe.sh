@@ -24,7 +24,7 @@ mkdir -p $ERROR_DIR
 SLIDESHOW_DELAY=3
 SHUFFLE=true
 SHOW_FILENAME=false
-
+SHOW_VIDEOS=false
 
 if [ -e ${CONF_DIR}/conf/photoframe.conf ]
 then
@@ -60,8 +60,14 @@ if [ -f "$WEBDAV_CONF" ]; then
   mount | grep $MOUNTPOINT_DAV > /dev/null
   if [ $? -eq 0 ]
   then
-    # Only sync supported images
-    ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*.mp4' --include '*.MP4' --include '*.mov' --include '*.MOV' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+    # Only sync supported files
+    if [ "$SHOW_VIDEOS" = true ]
+    then
+        ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*.mp4' --include '*.MP4' --include '*.mov' --include '*.MOV' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+    else
+        ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+    fi
+
     [ $? -eq 0 ] || error_write "Syncing images failed: $ERROR"
 
     umount $MOUNTPOINT_DAV
