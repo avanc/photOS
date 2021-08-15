@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 CONF_DIR=/data/photoframe
 MOUNTPOINT_DAV=/data/photoframe/images_webdav
 FOLDER_IMAGES=/data/photoframe/images_local
@@ -26,11 +26,33 @@ SHUFFLE=true
 SHOW_FILENAME=false
 SHOW_VIDEOS=false
 
+GPIO_PIN_NEXT=-1 # show next file
+GPIO_PIN_PREVIOUS=-1 # show previous file
+GPIO_PIN_PLAY=-1 # start/pause rotating images automatically
+GPIO_ACTION_VALUE=0 # value to identify action, for an pullup the value should be 0, for pulldown 1
+
 if [ -e ${CONF_DIR}/conf/photoframe.conf ]
 then
   source ${CONF_DIR}/conf/photoframe.conf
 fi
 
+# configure control buttons
+function init_gpio_input_pin() {
+  if [ "${1}" != "-1" ]
+    then
+    if [ ! -d /sys/class/gpio/gpio${1} ]
+    then
+      echo ${1} > /sys/class/gpio/export
+      echo "in" > /sys/class/gpio/gpio${1}/direction
+    fi
+  else 
+    echo not configuring gpio
+  fi
+}
+
+init_gpio_input_pin ${GPIO_PIN_NEXT} 
+init_gpio_input_pin ${GPIO_PIN_PLAY}
+init_gpio_input_pin ${GPIO_PIN_PREVIOUS}
 
 function read_conf {
   read -r firstline< $WEBDAV_CONF
@@ -43,11 +65,10 @@ error_settopic 10_Sync
 
 if [ -f "$WEBDAV_CONF" ]; then
   chmod 0600 ${WEBDAV_CONF}
-  
 
-  mkdir -p $FOLDER_IMAGES                                         
-  mkdir -p $MOUNTPOINT_DAV                                        
-                                                                
+  mkdir -p $FOLDER_IMAGES
+  mkdir -p $MOUNTPOINT_DAV
+
   REMOTE_DAV=$(read_conf)
 
   ERROR=$(mount.davfs -o ro,conf=$DAVFS_CONF "$REMOTE_DAV" $MOUNTPOINT_DAV 2>&1 > /dev/null)
@@ -81,14 +102,15 @@ else
 fi
 }
 
+
 ERROR_TOPIC="";
 
 function error_display {
   TTY=/dev/tty0
   echo -en "\e[H" > $TTY # Move tty cursor to beginning (1,1)
-  for f in $ERROR_DIR/*.txt; do                                 
-    [[ -f $f ]] || continue                                     
-    cat $f > $TTY                             
+  for f in $ERROR_DIR/*.txt; do
+    [[ -f $f ]] || continue
+    cat $f > $TTY
   done
 }
 
@@ -100,8 +122,6 @@ function error_settopic {
 function error_write {
   echo $1 >> $ERROR_DIR/$ERROR_TOPIC
 }
-
-
 
 num_files=0;
 file_num=0;
@@ -144,75 +164,141 @@ function get_image {
   fi
 }
 
+function get_previous_image() {
+  file_num=$((file_num + $num_files));
+  file_num=$((file_num-2));
 
+  get_image
+}
 
-IMAGE=$NO_IMAGES
+function is_gpio_pressed() {
+  if [ ! -d /sys/class/gpio/gpio${1} ]
+  then
+    false
+    return
+  fi
+
+  if [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_NEXT}/value)" -eq "${GPIO_ACTION_VALUE}" ]
+  then
+    true
+    return
+  else
+    false
+    return
+  fi
+}
 
 function start {
+  local IMAGE=$NO_IMAGES
+  local AUTO_NEXT_MODE=true # show next file after SLIDESHOW_DELAY
+  local IS_IMAGE=false
+  local PID=-1 # pid of omxplayer do detect video end
+  local LAST_IMAGE_UPDATE=0
+
   counter=0
   error_settopic 01_Startup
   error_write "Go to http://$(hostname) to configure photOS"
 
+  UPDATE_MEDIA=false
   while true; do
-    get_image
-    echo $IMAGE
-
-    IS_IMAGE=false
-
-    if file "$IMAGE" | cut -d':' -f2 |grep -qE 'image|bitmap'
+    if is_gpio_pressed ${GPIO_PIN_NEXT}
     then
-      IS_IMAGE=true
+      get_image
+      UPDATE_MEDIA=true
+      read -p "Pausing NEXT" -t 0.5
+      continue
+    elif is_gpio_pressed ${GPIO_PIN_PREVIOUS}
+    then
+      get_previous_image
+      UPDATE_MEDIA=true
+      read -p "Pausing PREVIOUS" -t 0.5
+      continue
+    elif is_gpio_pressed ${GPIO_PIN_PLAY}
+    then
+      read -p "Pausing PLAY" -t 0.5
+      if ${AUTO_NEXT_MODE}
+      then
+        AUTO_NEXT_MODE=false
+      else
+        AUTO_NEXT_MODE=true
+      fi
+      continue
     fi
 
-    if [ "$IS_IMAGE" = true ]
+    if ${AUTO_NEXT_MODE}
     then
-      IMAGE2=/tmp/photoframe.image
-      cp "$IMAGE" "$IMAGE2"
-      #    convert -auto-orient "$IMAGE" "$IMAGE2"
-      jhead -autorot $IMAGE2 &> /dev/null
-      fbv $PARAMS_FBV "$IMAGE2"
-    else
-      omxplayer  "$IMAGE"
+      NOW=$(date +%s)
+      if [ "$IS_IMAGE" = true ]
+      then
+        # image was shown for slide show delay
+        if [ $(( NOW - LAST_IMAGE_UPDATE )) -gt ${SLIDESHOW_DELAY} ]
+        then
+          UPDATE_MEDIA=true
+          get_image
+        fi
+      else
+        # video has ended
+        if ! kill $PID > /dev/null 2>&1; then
+          UPDATE_MEDIA=true
+          get_image
+        fi
+      fi
     fi
 
-    if [ "$SHOW_FILENAME" = true ]
+    if ${UPDATE_MEDIA}
     then
-      # abuse error reporting to show the path of the current picture
-      error_settopic 02_Current
-	  #don't show the FOLDER_IMAGES prefix
-      error_write "$( echo "$IMAGE" | sed -e "s|^${FOLDER_IMAGES}/||" )"
+      UPDATE_MEDIA=false
+      echo $IMAGE
+
+      IS_IMAGE=false
+
+      if file "$IMAGE" | cut -d':' -f2 |grep -qE 'image|bitmap'
+      then
+        IS_IMAGE=true
+      fi
+
+      if ${IS_IMAGE}
+      then
+        LAST_IMAGE_UPDATE=$(date +%s)
+        fbv $PARAMS_FBV "$IMAGE"
+      else
+        omxplayer  "$IMAGE" &
+        PID=$!
+      fi
+
+      if [ "$SHOW_FILENAME" = true ]
+      then
+        # abuse error reporting to show the path of the current picture
+        error_settopic 02_Current
+        #don't show the FOLDER_IMAGES prefix
+        error_write "$( echo "$IMAGE" | sed -e "s|^${FOLDER_IMAGES}/||" )"
+      fi
+
+      error_display
+
+      counter=$((counter+1))
+      if [ $counter -eq 10 ]
+      then
+        error_settopic 01_Startup
+      fi
     fi
-
-    error_display
-
-    if [ "$IS_IMAGE" = true ]
-    then
-      sleep $SLIDESHOW_DELAY
-    fi
-
-    counter=$((counter+1))
-    if [ $counter -eq 10 ]
-    then
-      error_settopic 01_Startup
-    fi
-
   done
 }
 
 
 function display {
-  case "$1" in                                                    
-    on)                                                      
-        vcgencmd display_power 1                                                   
-        ;;                                                      
-                                                                
-    off)                                                       
-        vcgencmd display_power 0                                                    
-        ;;                                                      
-                                                                
-    *)                              
+  case "$1" in
+    on)
+        vcgencmd display_power 1
+        ;;
+
+    off)
+        vcgencmd display_power 0
+        ;;
+
+    *)
         echo "Usage: $0 display {on|off}"
-        exit 1                                                   
+        exit 1
 esac
 }
 
@@ -231,14 +317,14 @@ case "$1" in
         start
         ;;
 
-    sync)         
+    sync)
         sync
-        ;;             
-            
-    display)                                                       
-        display $2                                                   
-        ;;                                           
-             
+        ;;
+
+    display)
+        display $2
+        ;;
+
     test)
         get_image
         ;;
@@ -247,5 +333,3 @@ case "$1" in
         echo "Usage: $0 {start|stop|restart|sync|display on/off}"
         exit 1
 esac
-
-
