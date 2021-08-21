@@ -27,33 +27,28 @@ SHUFFLE=false
 SHOW_FILENAME=false
 SHOW_VIDEOS=false
 
+GPIO_PIN_NEXT=16 # show next file
+GPIO_PIN_PREVIOUS=17 # show previous file
+GPIO_PIN_PLAY=22 # start/pause rotating images automatically
+GPIO_ACTION_VALUE=0 # value to identify action, for an pullup the value should be 0, for pulldown 1
+
 if [ -e ${CONF_DIR}/conf/photoframe.conf ]
 then
   source ${CONF_DIR}/conf/photoframe.conf
 fi
 
-GPIO_PIN_NEXT=16
-GPIO_PIN_PLAY=22
-GPIO_PIN_PREVIOUS=17
-
 # configure control buttons
-if [ ! -d /sys/class/gpio/gpio${GPIO_PIN_NEXT} ]
-then
-  echo ${GPIO_PIN_NEXT} > /sys/class/gpio/export
-  echo "in" > /sys/class/gpio/gpio${GPIO_PIN_NEXT}/direction
-fi
+function init_gpio_input_pin() {
+  if [ ! -d /sys/class/gpio/gpio${1} ]
+  then
+    echo ${1} > /sys/class/gpio/export
+    echo "in" > /sys/class/gpio/gpio${1}/direction
+  fi
+}
 
-if [ ! -d /sys/class/gpio/gpio${GPIO_PIN_PLAY} ]
-then
-  echo ${GPIO_PIN_PLAY} > /sys/class/gpio/export
-  echo "in" > /sys/class/gpio/gpio${GPIO_PIN_PLAY}/direction
-fi
-
-if [ ! -d /sys/class/gpio/gpio${GPIO_PIN_PREVIOUS} ]
-then
-  echo ${GPIO_PIN_PREVIOUS} > /sys/class/gpio/export
-  echo "in" > /sys/class/gpio/gpio${GPIO_PIN_PREVIOUS}/direction
-fi
+init_gpio_input_pin ${GPIO_PIN_NEXT} 
+init_gpio_input_pin ${GPIO_PIN_PLAY}
+init_gpio_input_pin ${GPIO_PIN_PREVIOUS}
 
 function read_conf {
   read -r firstline< $WEBDAV_CONF
@@ -104,6 +99,7 @@ else
 fi
 }
 
+# scale down images for faster displaying and switching
 function prepare {
   if [ ! -d ${THUMBNAILS_FOLDER_IMAGES} ]
   then
@@ -114,22 +110,21 @@ function prepare {
   do
     THUMBNAIL_FILE="${THUMBNAILS_FOLDER_IMAGES}/$(basename ${i})"
 
+    # if image does not exist
     if [ ! -f "${THUMBNAIL_FILE}" ]
     then
-      echo $THUMBNAIL_FILE exists
       if file "${i}" | cut -d':' -f2 |grep -qE 'image|bitmap'
-      then
+      then # file is image
         convert "${i}" -resize '1920x1080>' "${THUMBNAIL_FILE}"
         jhead -autorot "${THUMBNAIL_FILE}" &> /dev/null
-      else
+      else # file is video
         cp "${i}" "${THUMBNAIL_FILE}"
       fi
-    else
-      echo $THUMBNAIL_FILE not exists
     fi
   done
 
-  find $THUMBNAILS_FOLDER_IMAGES -type f -iname '*\.jpg' -o -iname '*\.jpeg' -o -iname '*\.png' -o -iname '*\.mp4' -o -iname '*\.mov' | sort > $PHOTO_FILE_LIST
+  # recreate photo list
+  find "${THUMBNAILS_FOLDER_IMAGES}" -type f -iname '*\.jpg' -o -iname '*\.jpeg' -o -iname '*\.png' -o -iname '*\.mp4' -o -iname '*\.mov' | sort > $PHOTO_FILE_LIST
 }
 
 ERROR_TOPIC="";
@@ -151,8 +146,6 @@ function error_settopic {
 function error_write {
   echo $1 >> $ERROR_DIR/$ERROR_TOPIC
 }
-
-
 
 num_files=0;
 file_num=0;
@@ -203,32 +196,33 @@ function get_previous_image() {
 }
 
 
-IMAGE=$NO_IMAGES
-AUTO_NEXT_MODE=false
-IS_IMAGE=false
-PID=-1
-LAST_IMAGE_UPDATE=0
 
 function start {
+  local IMAGE=$NO_IMAGES
+  local AUTO_NEXT_MODE=false # show next file after SLIDESHOW_DELAY
+  local IS_IMAGE=false
+  local PID=-1 # pid of omxplayer do detect video end
+  local LAST_IMAGE_UPDATE=0
+
   counter=0
   error_settopic 01_Startup
   error_write "Go to http://$(hostname) to configure photOS"
 
   UPDATE_MEDIA=false
   while true; do
-    if [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_NEXT}/value)" -eq "0" ]
+    if [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_NEXT}/value)" -eq "${GPIO_ACTION_VALUE}" ]
     then
       get_image
       UPDATE_MEDIA=true
       read -p "Pausing NEXT" -t 0.5
       continue
-    elif [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_PREVIOUS}/value)" -eq "0" ]
+    elif [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_PREVIOUS}/value)" -eq "${GPIO_ACTION_VALUE}" ]
     then
       get_previous_image
       UPDATE_MEDIA=true
       read -p "Pausing PREVIOUS" -t 0.5
       continue
-    elif [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_PLAY}/value)" -eq "0" ]
+    elif [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_PLAY}/value)" -eq "${GPIO_ACTION_VALUE}" ]
     then
       read -p "Pausing PLAY" -t 0.5
       if ${AUTO_NEXT_MODE}
@@ -253,7 +247,7 @@ function start {
         fi
       else
         # video has ended
-        if ! kill $pid > /dev/null 2>&1; then
+        if ! kill $PID > /dev/null 2>&1; then
           UPDATE_MEDIA=true
           get_image
         fi
@@ -285,7 +279,7 @@ function start {
       then
         # abuse error reporting to show the path of the current picture
         error_settopic 02_Current
-      #don't show the FOLDER_IMAGES prefix
+        #don't show the FOLDER_IMAGES prefix
         error_write "$( echo "$IMAGE" | sed -e "s|^${FOLDER_IMAGES}/||" )"
       fi
 

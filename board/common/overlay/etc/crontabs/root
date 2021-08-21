@@ -1,4 +1,4 @@
 13 * * * * /usr/sbin/logrotate /etc/logrotate.conf
 0 2 * * 0 /usr/sbin/https-update
 */15 * * * * /usr/sbin/dyndns-update
-*/30 * * * * /usr/bin/photoframe.sh sync
+*/30 * * * * /usr/bin/photoframe.sh sync && /usr/bin/photoframe.sh prepare
