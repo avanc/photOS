@@ -116,7 +116,6 @@ function prepare {
   IFS=$'\n'
   for i in $(cat ${PHOTO_FILE_LIST})
   do
-    echo $i
     THUMBNAIL_FILE="${THUMBNAILS_FOLDER_IMAGES}/$(basename ${i})"
 
     # if image does not exist
