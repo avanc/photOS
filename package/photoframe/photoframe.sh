@@ -23,13 +23,13 @@ ERROR_DIR="/tmp/photoframe"
 mkdir -p $ERROR_DIR
 
 SLIDESHOW_DELAY=3
-SHUFFLE=false
+SHUFFLE=true
 SHOW_FILENAME=false
 SHOW_VIDEOS=false
 
-GPIO_PIN_NEXT=16 # show next file
-GPIO_PIN_PREVIOUS=17 # show previous file
-GPIO_PIN_PLAY=22 # start/pause rotating images automatically
+GPIO_PIN_NEXT=-1 # show next file
+GPIO_PIN_PREVIOUS=-1 # show previous file
+GPIO_PIN_PLAY=-1 # start/pause rotating images automatically
 GPIO_ACTION_VALUE=0 # value to identify action, for an pullup the value should be 0, for pulldown 1
 
 if [ -e ${CONF_DIR}/conf/photoframe.conf ]
@@ -39,10 +39,15 @@ fi
 
 # configure control buttons
 function init_gpio_input_pin() {
-  if [ ! -d /sys/class/gpio/gpio${1} ]
-  then
-    echo ${1} > /sys/class/gpio/export
-    echo "in" > /sys/class/gpio/gpio${1}/direction
+  if [ "${1}" != "-1" ]
+    then
+    if [ ! -d /sys/class/gpio/gpio${1} ]
+    then
+      echo ${1} > /sys/class/gpio/export
+      echo "in" > /sys/class/gpio/gpio${1}/direction
+    fi
+  else 
+    echo not configuring gpio
   fi
 }
 
@@ -81,9 +86,9 @@ if [ -f "$WEBDAV_CONF" ]; then
     # Only sync supported files
     if [ "$SHOW_VIDEOS" = true ]
     then
-        ERROR=$(rsync --ignore-existing -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*.mp4' --include '*.MP4' --include '*.mov' --include '*.MOV' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+        ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*.mp4' --include '*.MP4' --include '*.mov' --include '*.MOV' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
     else
-        ERROR=$(rsync --ignore-existing -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
+        ERROR=$(rsync -vtrm --include '*.png' --include '*.PNG' --include '*.jpg' --include '*.JPG' --include '*.jpeg' --include '*.JPEG' --include '*/' --exclude '*' --delete $MOUNTPOINT_DAV/ $FOLDER_IMAGES 2>&1 > /dev/null)
     fi
 
     [ $? -eq 0 ] || error_write "Syncing images failed: $ERROR"
@@ -101,13 +106,17 @@ fi
 
 # scale down images for faster displaying and switching
 function prepare {
-  if [ ! -d ${THUMBNAILS_FOLDER_IMAGES} ]
-  then
-    mkdir ${THUMBNAILS_FOLDER_IMAGES}
-  fi
+  mkdir -p ${THUMBNAILS_FOLDER_IMAGES}
 
+  FB_WIDTH=$(cat /sys/class/graphics/fb0/virtual_size | cut -d',' -f1)
+  FB_HEIGHT=$(cat /sys/class/graphics/fb0/virtual_size | cut -d',' -f2)
+  RESOLUTION_SELECTOR=$(printf '%sx%s>' ${FB_WIDTH} ${FB_HEIGHT})
+
+  OLD_IFS="${IFS}"
+  IFS=$'\n'
   for i in $(cat ${PHOTO_FILE_LIST})
   do
+    echo $i
     THUMBNAIL_FILE="${THUMBNAILS_FOLDER_IMAGES}/$(basename ${i})"
 
     # if image does not exist
@@ -115,13 +124,15 @@ function prepare {
     then
       if file "${i}" | cut -d':' -f2 |grep -qE 'image|bitmap'
       then # file is image
-        convert "${i}" -resize '1920x1080>' "${THUMBNAIL_FILE}"
+        convert "${i}" -resize "${RESOLUTION_SELECTOR}" "${THUMBNAIL_FILE}"
         jhead -autorot "${THUMBNAIL_FILE}" &> /dev/null
       else # file is video
         cp "${i}" "${THUMBNAIL_FILE}"
       fi
     fi
   done
+
+  IFS="${OLD_IFS}"
 
   # recreate photo list
   find "${THUMBNAILS_FOLDER_IMAGES}" -type f -iname '*\.jpg' -o -iname '*\.jpeg' -o -iname '*\.png' -o -iname '*\.mp4' -o -iname '*\.mov' | sort > $PHOTO_FILE_LIST
@@ -195,11 +206,26 @@ function get_previous_image() {
   get_image
 }
 
+function is_gpio_pressed() {
+  if [ ! -d /sys/class/gpio/gpio${1} ]
+  then
+    false
+    return
+  fi
 
+  if [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_NEXT}/value)" -eq "${GPIO_ACTION_VALUE}" ]
+  then
+    true
+    return
+  else
+    false
+    return
+  fi
+}
 
 function start {
   local IMAGE=$NO_IMAGES
-  local AUTO_NEXT_MODE=false # show next file after SLIDESHOW_DELAY
+  local AUTO_NEXT_MODE=true # show next file after SLIDESHOW_DELAY
   local IS_IMAGE=false
   local PID=-1 # pid of omxplayer do detect video end
   local LAST_IMAGE_UPDATE=0
@@ -210,19 +236,19 @@ function start {
 
   UPDATE_MEDIA=false
   while true; do
-    if [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_NEXT}/value)" -eq "${GPIO_ACTION_VALUE}" ]
+    if is_gpio_pressed ${GPIO_PIN_NEXT}
     then
       get_image
       UPDATE_MEDIA=true
       read -p "Pausing NEXT" -t 0.5
       continue
-    elif [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_PREVIOUS}/value)" -eq "${GPIO_ACTION_VALUE}" ]
+    elif is_gpio_pressed ${GPIO_PIN_PREVIOUS}
     then
       get_previous_image
       UPDATE_MEDIA=true
       read -p "Pausing PREVIOUS" -t 0.5
       continue
-    elif [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_PLAY}/value)" -eq "${GPIO_ACTION_VALUE}" ]
+    elif is_gpio_pressed ${GPIO_PIN_PLAY}
     then
       read -p "Pausing PLAY" -t 0.5
       if ${AUTO_NEXT_MODE}
