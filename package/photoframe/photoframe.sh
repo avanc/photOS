@@ -24,6 +24,7 @@ SHUFFLE=true
 SHOW_FILENAME=false
 SHOW_VIDEOS=false
 SMARTFIT=30
+CEC_DEVICE_ID=-1
 
 PARAMS_FBV="--noclear --smartfit ${SMARTFIT} --delay 1"
 
@@ -291,10 +292,18 @@ function display {
   case "$1" in
     on)
         vcgencmd display_power 1
+        if [ "${CEC_DEVICE_ID}" != "-1" ]
+        then
+          echo "on ${CEC_DEVICE_ID}" | cec-client -s -d 1
+        fi
         ;;
 
     off)
         vcgencmd display_power 0
+        if [ "${CEC_DEVICE_ID}" != "-1" ]
+        then
+          echo "standby ${CEC_DEVICE_ID}" | cec-client -s -d 1
+        fi
         ;;
 
     *)
