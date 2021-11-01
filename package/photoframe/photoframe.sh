@@ -14,8 +14,6 @@ fi
 #File that lists all available photos. Will be overwritten on sync
 PHOTO_FILE_LIST=${CONF_DIR}/conf/filelist.txt
 
-PARAMS_FBV="--noclear --smartfit 30 --delay 1"
-
 NO_IMAGES="/usr/share/photoframe/noimages.png"
 
 ERROR_DIR="/tmp/photoframe"
@@ -25,6 +23,9 @@ SLIDESHOW_DELAY=3
 SHUFFLE=true
 SHOW_FILENAME=false
 SHOW_VIDEOS=false
+SMARTFIT=30
+
+PARAMS_FBV="--noclear --smartfit ${SMARTFIT} --delay 1"
 
 GPIO_PIN_NEXT=-1 # show next file
 GPIO_PIN_PREVIOUS=-1 # show previous file
