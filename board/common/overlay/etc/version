@@ -1,4 +1,4 @@
 OS_NAME="photOS"
 OS_SHORT_NAME="photOS"
 OS_PREFIX="photos"
-OS_VERSION="0.3.5"
+OS_VERSION="0.3.6-rc2"
