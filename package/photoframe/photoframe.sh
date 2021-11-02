@@ -26,8 +26,6 @@ SHOW_VIDEOS=false
 SMARTFIT=30
 CEC_DEVICE_ID=-1
 
-PARAMS_FBV="--noclear --smartfit ${SMARTFIT} --delay 1"
-
 GPIO_PIN_NEXT=-1 # show next file
 GPIO_PIN_PREVIOUS=-1 # show previous file
 GPIO_PIN_PLAY=-1 # start/pause rotating images automatically
@@ -37,6 +35,11 @@ if [ -e ${CONF_DIR}/conf/photoframe.conf ]
 then
   source ${CONF_DIR}/conf/photoframe.conf
 fi
+
+PARAMS_FBV="--noclear --smartfit ${SMARTFIT} --delay 1"
+
+
+
 
 # configure control buttons
 function init_gpio_input_pin() {
