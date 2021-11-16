@@ -242,8 +242,9 @@ function start {
           get_image
         fi
       else
-        # video has ended
-        if ! kill $PID > /dev/null 2>&1; then
+        # Check if video has ended
+        if ! [ -d "/proc/$PID" ]; then
+          # Video has ended, new media can be shown
           UPDATE_MEDIA=true
           get_image
         fi
@@ -267,7 +268,7 @@ function start {
         LAST_IMAGE_UPDATE=$(date +%s)
         fbv $PARAMS_FBV "$IMAGE"
       else
-        omxplayer  "$IMAGE" &
+        omxplayer --no-keys "$IMAGE" &
         PID=$!
       fi
 
