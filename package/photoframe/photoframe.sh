@@ -266,7 +266,11 @@ function start {
       if ${IS_IMAGE}
       then
         LAST_IMAGE_UPDATE=$(date +%s)
-        fbv $PARAMS_FBV "$IMAGE"
+
+        IMAGE2=/tmp/photoframe.image
+        cp "$IMAGE" "$IMAGE2"
+        jhead -autorot $IMAGE2 &> /dev/null
+        fbv $PARAMS_FBV "$IMAGE2"
       else
         omxplayer --no-keys "$IMAGE" &
         PID=$!
