@@ -1,0 +1,13 @@
+config BR2_PACKAGE_PYTHON_MAUTRIX
+	bool "python-mautrix"
+	select BR2_PACKAGE_LIBOLM
+	select BR2_PACKAGE_PYTHON_OLM
+	select BR2_PACKAGE_PYTHON_MULTIDICT
+	select BR2_PACKAGE_PYTHON_AIOHTTP
+	select BR2_PACKAGE_PYTHON_ATTRS
+	select BR2_PACKAGE_PYTHON_YARL
+
+	help
+	  A Python 3.8+ asyncio Matrix framework.
+
+	  https://pypi.org/project/mautrix/

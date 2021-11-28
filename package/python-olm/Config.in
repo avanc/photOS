@@ -1,0 +1,10 @@
+config BR2_PACKAGE_PYTHON_OLM
+	bool "python-olm"
+	select BR2_PACKAGE_PYTHON_CFFI # runtime
+	select BR2_PACKAGE_PYTHON_FUTURE # runtime
+	select BR2_PACKAGE_PYTHON_TYPING # runtime
+	help
+	  python CFFI bindings for the olm cryptographic ratchet
+	  library.
+
+	  https://github.com/poljar/python-olm

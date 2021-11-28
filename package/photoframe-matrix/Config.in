@@ -1,0 +1,15 @@
+config BR2_PACKAGE_PHOTOFRAME_MATRIX
+	bool "photoframe-matrix"
+	select BR2_PACKAGE_LIBOLM
+	select BR2_PACKAGE_POSTGRES
+	select BR2_PACKAGE_PYTHON_PIP
+	select BR2_PACKAGE_PYTHON_OLM
+	select BR2_PACKAGE_PYTHON_MULTIDICT
+	select BR2_PACKAGE_PYTHON_AIOHTTP
+	select BR2_PACKAGE_PYTHON_ATTRS
+	select BR2_PACKAGE_PYTHON_YARL
+	select BR2_PACKAGE_PYTHON_MAUTRIX
+	select BR2_PACKAGE_PYTHON_MATRIX_PHOTOS
+
+	help
+	  sync photos with the matrix.org open standard for secure, decentralised, real-time communication.

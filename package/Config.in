@@ -1247,6 +1247,12 @@ menu "External python modules"
 	source "package/python-zc-lockfile/Config.in"
 	source "package/python-zeroconf/Config.in"
 	source "package/python-zope-interface/Config.in"
+
+	source "package/python-olm/Config.in"
+	source "package/python-mautrix/Config.in"
+	source "package/python-matrix-photos/Config.in"
+
+
 endmenu
 endif
 	source "package/ruby/Config.in"

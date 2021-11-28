@@ -1,0 +1,33 @@
+logging:
+    version: 1
+    formatters:
+        normal:
+            format: "[%(asctime)s] [%(levelname)s@%(name)s] %(message)s"
+    handlers:
+        file:
+            class: logging.handlers.RotatingFileHandler
+            formatter: normal
+            filename: ./matrix-photoframe.log
+            maxBytes: 10485760
+            backupCount: 10
+        console:
+            class: logging.StreamHandler
+            formatter: normal
+    loggers:
+        mau:
+            level: WARN
+        aiohttp:
+            level: WARN
+    root:
+        level: WARN
+        handlers: [file, console]
+
+matrix:
+    user_id: "@your:matrix.userid"
+    user_password: "your_matrix_user_password"
+    device_id: "MyMatrixPhotoFrame"
+    base_url: "https://your.matrix.homeserver"
+    database_url: "postgres://postgres_username:postgres_password@localhost"
+    media_path: "/data/photoframe/images_local"
+    trusted_users:
+        - "@user:localhost"

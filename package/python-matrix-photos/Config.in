@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PYTHON_MATRIX_PHOTOS
+	bool "python-matrix-photos"
+	select BR2_PACKAGE_PYTHON_MAUTRIX
+	select BR2_PACKAGE_PYTHON_PYYAML
+	help
+	  Matrix client for photos
+
+	  https://pypi.org/project/matrix-photos/
