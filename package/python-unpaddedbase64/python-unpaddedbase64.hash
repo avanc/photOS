@@ -1,0 +1,5 @@
+# md5, sha256 from https://pypi.org/pypi/unpaddedbase64/json
+md5  df85a20cbb8bf365a14db3011e9a7c49  unpaddedbase64-2.1.0.tar.gz
+sha256  7273c60c089de39d90f5d6d4a7883a79e319dc9d9b1c8924a7fab96178a5f005  unpaddedbase64-2.1.0.tar.gz
+# Locally computed sha256 checksums
+sha256  0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594  LICENSE

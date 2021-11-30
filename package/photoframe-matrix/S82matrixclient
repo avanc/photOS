@@ -2,6 +2,7 @@
 
 
 PROG=/usr/bin/python
+MATRIX_CONFIG=/data/photoframe/conf/matrix_config.yml
 
 test -x ${PROG} || exit 0
 
@@ -10,7 +11,7 @@ test -n "${OS_VERSION}" || source /etc/init.d/base
 
 start() {
   msg_begin "Starting matrix client"
-  ${PROG} -m matrix_photos -c /etc/photoframe/matrix_config.yml &
+  ${PROG} -m matrix_photos -c ${MATRIX_CONFIG} &
   
   test $? == 0 && msg_done || msg_fail
 }

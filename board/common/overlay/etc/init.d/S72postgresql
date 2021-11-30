@@ -6,9 +6,9 @@ CONF="/data/etc/postgresql.conf"
 
 PROG="/usr/bin/pg_ctl"
 
-DB_DIR="/var/lib/postgresql"
+DB_DIR="/data/photoframe/db"
 USER="postgres"
-LOG="/var/log/postgresql.log"
+LOG="/data/log/postgresql.log"
 
 
 function run_pg_ctl() {
