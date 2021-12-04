@@ -296,6 +296,7 @@ comment "Graphic applications"
 	source "package/netsurf/Config.in"
 	source "package/pngquant/Config.in"
 	source "package/photoframe/Config.in"
+	source "package/photoframe-matrix/Config.in"
 	source "package/qt5cinex/Config.in"
 	source "package/rrdtool/Config.in"
 	source "package/stellarium/Config.in"
@@ -1247,11 +1248,10 @@ menu "External python modules"
 	source "package/python-zc-lockfile/Config.in"
 	source "package/python-zeroconf/Config.in"
 	source "package/python-zope-interface/Config.in"
-
 	source "package/python-olm/Config.in"
 	source "package/python-mautrix/Config.in"
 	source "package/python-matrix-photos/Config.in"
-
+	source "package/python-unpaddedbase64/Config.in"
 
 endmenu
 endif

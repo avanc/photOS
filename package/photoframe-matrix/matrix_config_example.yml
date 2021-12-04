@@ -27,7 +27,8 @@ matrix:
     user_password: "your_matrix_user_password"
     device_id: "MyMatrixPhotoFrame"
     base_url: "https://your.matrix.homeserver"
-    database_url: "postgres://postgres_username:postgres_password@localhost"
+    database_url: "postgres://postgres:postgres@localhost"
     media_path: "/data/photoframe/images_local"
+    media_file: "/data/photoframe/conf/filelist.txt"
     trusted_users:
         - "@user:localhost"
