@@ -185,7 +185,7 @@ fi
 # dav for photoframe
 if [ -n "$DAV_URL" ] && [ -n "$DAV_USER" ] && [ -n "$DAV_PASSWD" ]; then
     msg "setting dav configuration"
-    conf=$BOOT/photoframe.conf
+    conf=$BOOT/webdav.conf
     {
     echo "$DAV_URL $DAV_USER $DAV_PASSWD"
     } > "$conf"

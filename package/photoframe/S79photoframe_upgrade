@@ -24,13 +24,6 @@ start() {
   CURRENT=$(get_folderversion)
   #echo Folder Version: $CURRENT
 
-  if [ $CURRENT -eq $LATEST ]
-  then
-    echo "Up to date"
-    exit 0
-  fi
-
-
   if [ $CURRENT -gt $LATEST ]
   then
     echo "Folder version is greater than the supported version! Something is wrong!"
@@ -68,6 +61,9 @@ start() {
     CURRENT=$NEXT
   fi
 
+  # Copy new config from boot partition
+  test -n "${OS_VERSION}" || source /etc/init.d/base
+  prepare_conf /data/photoframe/conf/webdav.conf  /does/not/exist /boot/webdav.conf
 
 
 }
