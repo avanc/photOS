@@ -9,9 +9,6 @@ test -n "${OS_VERSION}" || source /etc/init.d/base
 
 
 start() {
-  msg_begin "Syncing photos"
-  ${PROG} sync &
-
   msg_begin "Starting photoframe"
   ${PROG} start > /dev/null &
 
