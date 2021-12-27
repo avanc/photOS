@@ -183,7 +183,7 @@ function is_gpio_pressed() {
     return
   fi
 
-  if [ "$(cat /sys/class/gpio/gpio${GPIO_PIN_NEXT}/value)" -eq "${GPIO_ACTION_VALUE}" ]
+  if [ "$(cat /sys/class/gpio/gpio${1}/value)" -eq "${GPIO_ACTION_VALUE}" ]
   then
     true
     return
