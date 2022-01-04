@@ -3,6 +3,8 @@
 
 # What's photOS?
 
+[![Join the chat at https://gitter.im/photOS-Photoframe/community](https://badges.gitter.im/photOS-Photoframe/community.svg)](https://gitter.im/photOS-Photoframe/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **photOS** is a lightweight Linux-based operating system for a DIY photoframe. The software syncs photos with a dav server so new images can be easily added. In my current setup I use [Nextcloud](https://nextcloud.com) as server, but any dav server should work. With Nextcloud I can use the Android app to directly upload images from my mobile phone. In addition, I can share the photo folder with other family members, so they can add photos as well. Even from a distance during pandemies...
 
 Main focus are the Raspberry Pi boards (especially Raspberry Pi Zero W, as the performance is sufficient). But as photoOS is based on the great work of [thingOS](https://github.com/ccrisan/thingos) by ccrisan, which builds on top of [Buildroot](https://buildroot.uclibc.org), other boards can be easily supported. Just create a ticket for not supported boards.
