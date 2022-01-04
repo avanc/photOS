@@ -1,4 +1,4 @@
-[![Join the chat at https://gitter.im/photOS-Photoframe/community](https://badges.gitter.im/photOS-Photoframe/community.svg)](https://gitter.im/photOS-Photoframe/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/photOS-Photoframe/community](./badges/chat_gitter.svg)](https://gitter.im/photOS-Photoframe/community) [![Join the chat at https://matrix.to/#/#photOS-Photoframe_community:gitter.im](./badges/chat_matrix.svg)](https://matrix.to/#/#photOS-Photoframe_community:gitter.im)
 
 <img src="https://github.com/avanc/photOS/blob/master/logo/photos_logo.svg?raw=true" alt="photOS" width="300"/>
 
