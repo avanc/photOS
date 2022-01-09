@@ -11,6 +11,7 @@ Main focus are the Raspberry Pi boards (especially Raspberry Pi Zero W, as the p
 
 # Features
 * **Sync**: Photos can be synced from a [WebDAV](https://en.wikipedia.org/wiki/WebDAV) server.
+  * Note: There is also experimental support to send images via [matrix](https://matrix.org) protocol: https://github.com/avanc/photOS-matrix
 * **Offline**: Works also if no internet connection is available.
 * **Power Saving**: By turning the HDMI output off (e.g. by default at night) most monitors go into power savings mode. In addition, the HDMI output can be turned on/off using [motion detector](https://github.com/avanc/photOS/wiki/Motion-Detection).
 * **Small Footprint**: Images are directly drawn on the framebuffer without the need for any X dependencies.
