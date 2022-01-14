@@ -1,0 +1,4 @@
+config BR2_PACKAGE_RCLONE
+	bool "rclone"
+	help
+	  Command line program to manage files on cloud storage.
