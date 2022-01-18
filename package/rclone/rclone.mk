@@ -5,7 +5,7 @@
 ################################################################################
 
 RCLONE_VERSION = 1.57.0
-RCLONE_SITE = https://downloads.rclone.org/v$(RCLONE_VERSION)/
+RCLONE_SITE = https://downloads.rclone.org/v$(RCLONE_VERSION)
 RCLONE_SOURCE = rclone-v$(RCLONE_VERSION)-linux-arm.zip
 RCLONE_LICENSE = MIT
 
