@@ -21,6 +21,7 @@ mkdir -p $ERROR_DIR
 
 SLIDESHOW_DELAY=3
 SHUFFLE=true
+START_RANDOM=false
 SHOW_FILENAME=false
 SHOW_VIDEOS=false
 SMARTFIT=30
@@ -130,6 +131,12 @@ function error_write {
 
 num_files=0;
 file_num=0;
+
+if [ "$START_RANDOM" = true ]
+then
+  file_num=$RANDOM
+fi
+
 
 function get_image {
   local rnd_num
